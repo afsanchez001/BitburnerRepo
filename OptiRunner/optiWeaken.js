@@ -1,4 +1,12 @@
-/** @param {NS} ns **/
+/** @param {NS} ns */
 export async function main(ns) {
-    await ns.weaken(ns.args[0])
+	let target = ns.args[0];
+	let repeat = ns.args[1];
+	do {
+		try {
+			await ns.weaken(target);
+		} catch (Err) {
+			ns.print("Warning: " + target + ", " + Err);
+		}
+	} while (repeat)
 }
