@@ -168,8 +168,8 @@ export async function main(ns) {
                     meta.nextAction = "GROW";
                 }
             } catch (Err) {
-                log(ns, worker); // Error: UNKNOWN TYPE: pserv-0
-                log(ns, Err); // Error: UNKNOWN TYPE: pserv-0
+                log(ns, worker);
+                log(ns, Err); 
                 log(ns, `Skipping weaken() on ${target} due to 0 threads being available.`);
             }
         } else {
@@ -194,8 +194,8 @@ export async function main(ns) {
                     meta.nextAction = "HACK";
                 }
             } catch (Err) {
-                log(ns, worker); // Error: UNKNOWN TYPE: pserv-0
-                log(ns, Err); // Error: UNKNOWN TYPE: pserv-0
+                log(ns, worker);
+                log(ns, Err);
                 log(ns, `Skipping grow() on ${target} due to 0 threads being available.`);
             }
         } else {
@@ -227,8 +227,8 @@ export async function main(ns) {
                     meta.nextAction = "WEAKEN";
                 }
             } catch (Err) {
-                log(ns, worker); // Error: UNKNOWN TYPE: pserv-0
-                log(ns, Err); // Error: UNKNOWN TYPE: pserv-0
+                log(ns, worker); 
+                log(ns, Err); 
                 log(ns, `Skipping hack() on ${target} due to 0 threads being available.`);
             }
         } else {
