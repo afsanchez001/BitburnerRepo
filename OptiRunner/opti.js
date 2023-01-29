@@ -154,9 +154,13 @@ export async function main(ns) {
     function weaken(ns, worker, target, meta) {
         log(ns, `exec ${meta.nextAction} on ${target}`);
 
-        let weakenThreads = 0;
-
-        while (ns.weakenAnalyze(weakenThreads++, 1) <= meta.raisedSecurityLevel) {}
+        // let weakenThreads = 0;
+        let weakenThreads = meta.raisedSecurityLevel / 0.05;
+        
+        // while (ns.weakenAnalyze(weakenThreads++, 1) <= meta.raisedSecurityLevel) {}
+        while (ns.weakenAnalyze(weakenThreads++, 1) <= meta.raisedSecurityLevel) { 
+            await ns.sleep(0); 
+        }
 
         if (weakenThreads > 0) {
             log(ns, `weakening with ${weakenThreads} threads (${millisecondsToString(ns.getWeakenTime(target))})`);
