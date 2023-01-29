@@ -26,7 +26,7 @@
             And, I added port vulnerability programs (BruteSSH, FTPCrack, etc.), and 'Nuke' incase we need it.
 
             (1/29/23)
-            Added lines 158 and 161 on u/AnyGiraffe4367's suggestion.
+            Added lines 158 and 161 on u/AnyGiraffe4367's suggestion, from: https://www.reddit.com/r/Bitburner/comments/10nija3/milestone_achieved/
 */
 
 import {
