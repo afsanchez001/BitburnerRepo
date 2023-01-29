@@ -24,6 +24,9 @@
             Also, I removed the single_target argument. This script will only iterate through ALL available targets.
 
             And, I added port vulnerability programs (BruteSSH, FTPCrack, etc.), and 'Nuke' incase we need it.
+
+            (1/29/23)
+            Added lines 158 and 161 on u/AnyGiraffe4367's suggestion.
 */
 
 import {
