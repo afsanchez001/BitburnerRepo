@@ -12,8 +12,10 @@ export async function main(ns) {
     while (true) {
 
         let longest = 0;
-        //let purchased_servers = ns.getPurchasedServers();
-        let purchased_servers = ["home", "pserv-0", "pserv-1", "pserv-2", "pserv-3", "pserv-4", "pserv-5", "pserv-6", "pserv-7", "pserv-8", "pserv-9", "pserv-10", "pserv-11", "pserv-12", "pserv-13", "pserv-14", "pserv-15", "pserv-16", "pserv-17", "pserv-18", "pserv-19", "pserv-20", "pserv-21", "pserv-22", "pserv-23", "pserv-24"];
+
+        let purchased_servers = ns.getPurchasedServers(); // get every bought server.
+
+        purchased_servers.push("home"); // add home to the array.
 
         for (let pserv of purchased_servers) {
             longest = Math.max(pserv.length, longest)
