@@ -1,3 +1,11 @@
+/*
+	(1/30/23)
+	This script was written by u/SteaksAreReal
+	Full repo is here: https://github.com/xxxsinx/bitburner
+
+	NOTE: He added that spacing can be set to 1 from 1.5 for improved viewing.
+*/
+
 import { pctColor, PrintTable, DefaultStyle, ColorPrint } from './tables.js'
 
 // Returns a weight that can be used to sort servers by hack desirability
