@@ -30,7 +30,6 @@
     Changed the css for contracts, line 110, ("'><span style='color:cornflowerblue; font-size: 16px; font-family: Verdana;'>©</font></a>")
     Added css styling to the faction, line 127, (style='color:${nameColor}; font-size: 16px; font-family: "Verdana";'>${name}${faction}</a> `,)
 
-    - u/DukeNukemDad, 2/2/2023
 */
 
 let facServers = {
