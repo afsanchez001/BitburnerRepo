@@ -28,9 +28,10 @@
     Edited the output lines, line 107, (output += ["<br>", "<font color=#646464>---</font>".repeat(server.depth),)
     Changed the ascii square symbol to a house, line 108, (`<font color=${hackColor}>⌂ </font>`,)
     Changed the css for contracts, line 110, ("'><span style='color:cornflowerblue; font-size: 16px; font-family: Verdana;'>©</font></a>")
-    Added css styling to the faction, line 127, (style='color:${nameColor}; font-size: 16px; font-family: "Verdana";'>${name}${faction}</a> `,)
-
+    Added css styling to the faction, line 134, (style='color:${nameColor}; font-size: 16px; font-family: "Verdana";'>${name}${faction}</a> `,)
+    Added code to show all .lit files, line 114.
 */
+
 
 let facServers = {
     "CSEC": "yellow",
@@ -110,6 +111,13 @@ export async function main(ns) {
             ].join("");
         });
 
+        let literature = "";
+        ns.ls(name, ".lit").forEach(litName => {
+            literature += ["<a title='", litName,
+                "'><span style='color:lightcoral; font-size: 16px; font-family: Verdana; opacity: .9;'>{.lit}</font></a>"
+            ].join("");
+        });
+
         output += ["<br>", "<font color=#646464>---</font>".repeat(server.depth),
             `<font color=${hackColor}>⌂ </font>`,
             `<a class='scan-analyze-link' title='${hoverText}''
@@ -125,6 +133,7 @@ export async function main(ns) {
             
             style='color:${nameColor}; font-size: 16px; font-family: "Verdana";'>${name}${faction}</a> `,
             `<font color='fuchisa'>${ctText}</font>`,
+            `<font color='fuchisa'>${literature}</font>`,
         ].join("");
     });
 
