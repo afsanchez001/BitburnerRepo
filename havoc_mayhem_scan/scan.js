@@ -23,7 +23,8 @@
     -----------------
     I applied all suggestions and edits to the script from u/LangyMD, u/h41nr1ch, u/levitt-red.
     I updated line 91, ("&#10;Memory: ", ns.getServerMaxRam(name), "GB",) addressing the ns.getServerRam() is no longer supported error.
-    I added a new header with comments, css styling and a param for the current bitnode, lines 64 and 65
+    I added a new header with comments, css styling, lines 64 and 65
+    I added a param for the current bitnode, line 70, (let bitnode = "BN" + ns.getPlayer().bitNodeN;)
     I edited the output lines, line 107, (output += ["<br>", "<font color=#646464>---</font>".repeat(server.depth),)
     I changed the ascii square symbol to a house, line 108, (`<font color=${hackColor}>⌂ </font>`,)
     I added css styling to the faction, line 121, (style='color:${nameColor}; font-size: 16px; font-family: "Verdana";'>${name}${faction}</a> `,)
