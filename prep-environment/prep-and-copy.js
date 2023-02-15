@@ -16,6 +16,10 @@ export async function main(ns) {
 				ns.installBackdoor();
 			
 			(SEE: https://github.com/bitburner-official/bitburner-src/blob/dev/markdown/bitburner.singularity.installbackdoor.md)
+			
+		UPDATE:
+			This version adds line 31 to incporate three files to be copied on all servers.
+			They are copied at lines 46, through 50.
 	*/
 
     //ns.disableLog("ALL");
