@@ -29,7 +29,7 @@ export async function main(ns) {
     var servers = serverList(ns); // Get all the servers.
     var protected_targets = ["home", "pserv-0"]; // Make sure we ignore these servers.
 
-    var files = ["targted-hack.js", "targted-grow.js", "targted-weaken.js"];
+    var files = ["targeted-hack.js", "targeted-grow.js", "targeted-weaken.js"];
 
     // Create our unprotected targets list.
     var unprotected_targets = servers.filter(function(server) {
