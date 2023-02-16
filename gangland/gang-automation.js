@@ -123,7 +123,7 @@ export async function main(ns) {
 
 		// ASCEND
         for (var i = 0; i < members.length; ++i) {
-            if (DoAscension(members[i]) == true) {
+            if (DoAscension(members[i])) {
                 ns.print("Ascending member: " + members[i] + "\n")
                 Ascend(members[i]);
             } else {
