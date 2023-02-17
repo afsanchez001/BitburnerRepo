@@ -1,17 +1,17 @@
 /** @param {NS} ns */
 export async function main(ns) {
 
-/*
-		General gang action plan: 
-			Respect 
-				-> 12 members 
-					-> power 
-						-> all win chances >55% 
-							-> engage in territory warfare on 
-								-> power/money (keep win chances > 55%) 
-									-> territory 100% 
-										-> money/rep
-*/
+    /*
+            General gang action plan: 
+                Respect 
+                    -> 12 members 
+                        -> power 
+                            -> all win chances >55% 
+                                -> engage in territory warfare on 
+                                    -> power/money (keep win chances > 55%) 
+                                        -> territory 100% 
+                                            -> money/rep
+    */
 
     ns.disableLog("ALL");
     ns.clearLog();
@@ -29,6 +29,11 @@ export async function main(ns) {
     const memberVehicles = [];
     const memberArmor = [];
     const memberRootkits = [];
+
+    const memberPrepped = [];
+
+    const membersToAscend = [];
+    const memberStats = [];
 
     const delay = 100;
 
@@ -53,33 +58,33 @@ export async function main(ns) {
 
     // loop through all valid tasks.
     for (var i = 0; i < tasks.length; ++i) {
-       // TOP EARNERS
+        // TOP EARNERS
         if (tasks[i].toString() == "Ransomware" ||
             tasks[i].toString() == "Phishing" ||
             tasks[i].toString() == "Identity Theft" ||
             tasks[i].toString() == "Fraud & Counterfeiting" ||
             tasks[i].toString() == "Money Laundering") {
             topEarners.push(tasks[i]);
-        // TOP RESPECT
+            // TOP RESPECT
         } else if (tasks[i].toString() == "Cyberterrorism" ||
             tasks[i].toString() == "DDoS Attacks" ||
             tasks[i].toString() == "Plant Virus" ||
             tasks[i].toString() == "Money Laundering") {
             topRespect.push(tasks[i]);
-        // TOP VIRTUOUS
+            // TOP VIRTUOUS
         } else if (tasks[i].toString() == "Ethical Hacking" ||
             tasks[i].toString() == "Vigilante Justice") {
             topVirtuous.push(tasks[i]);
-        // TRAINING
+            // TRAINING
         } else if (tasks[i].toString() == "Train Combat" ||
             tasks[i].toString() == "Train Hacking" ||
             tasks[i].toString() == "Train Charisma" ||
             tasks[i].toString() == "Train Warfare") {
             training.push(tasks[i]);
-        // WARFARE
+            // WARFARE
         } else if (tasks[i].toString() == "Territory Warfare") {
             warfare.push(tasks[i]);
-        // UNASSIGNED
+            // UNASSIGNED
         } else if (tasks[i].toString() == "Unassigned") {
             idle.push(tasks[i]);
         }
@@ -93,11 +98,11 @@ export async function main(ns) {
         var money = ns.getServerMoneyAvailable("home");
 
         const gangInfo = ns.gang.getGangInformation();
-        //const income = ns.gang.getGangInformation().moneyGainRate;
+        //const income = ns.gang.getGangInformation().moneyGainRate;🔥
 
         ns.print(" \n");
-        ns.print("Server money: "  + "💲 " + ns.nFormat(money, "0.000a"));
-        ns.print("Gang name: " + gangInfo.faction);
+        ns.print("Server money: " + "💲 " + ns.nFormat(money, "0.000a"));
+        ns.print("Gang name: 🌆 " + gangInfo.faction);
         //ns.print("Gang income: " + ns.nFormat(income, "0.000a"));
 
         var members = ns.gang.getMemberNames();
@@ -113,44 +118,139 @@ export async function main(ns) {
             ns.print("    " + "😐 " + prospects[i] + "\n");
         }
 
-		// RECRUIT
-        if (ns.gang.canRecruitMember()) {            
-			ns.print("\n" + "Recruiting new prospect..." + "\n");            
-			await RecruitProspect();
+        // RECRUIT
+        if (ns.gang.canRecruitMember()) {
+            ns.print("\n" + "Recruiting new prospect..." + "\n");
+            await RecruitProspect();
         } else {
-            // ns.print("\n" + "Cannot recruit at this time. Increase [Respect] to recruit." + "\n");
+            ns.print("\n" + "⬆️ Increase [Respect] levels to recruit 'Prospects'." + "\n");
+            ns.print(" \n");
         }
 
-		// ASCEND
+        // ASCEND
         for (var i = 0; i < members.length; ++i) {
             if (await DoAscension(members[i])) {
                 ns.print("Ascending member: " + members[i] + "\n")
                 await Ascend(members[i]);
             } else {
-                // ns.print("Not optimal to ascend member: " + members[i] + "\n")
-            }    
+                // ASCENDING WAIT-LIST...
+                if (membersToAscend.includes(members[i])) {
+                    continue;
+                } else {
+                    membersToAscend.push(members[i]);
+                }
+            }
 
-			// PREP MEMBER        
-			// ns.print("Prepping member: " + members[i] + "\n")
-            Prepare(members[i]);
+            // CHECK IF ALREADY PREPPED
+            if (memberPrepped.includes(members[i])) {
+                continue;
+            } else {
+                // PREP MEMBER        
+                ns.print("Prepping member: " + members[i] + "\n")
+                Prepare(members[i]);
+            }
         }
+
+        var ascendList = "";
+        membersToAscend.forEach((e) => {
+            ascendList += e + ", ";
+        });
+        ascendList = ascendList.substring(0, ascendList.length - 2); // remove last comma.
+
+        ns.print("🛑 Not optimal to ascend current member wait-list. \n"); // " + ascendList + "
 
         // GET ALL HACK SKILL LEVELS. Sort members from highest to lowest Hack().
-        const skillSort = members.sort((b, a) => ns.gang.getMemberInformation(a).hack - ns.gang.getMemberInformation(b).hack) 
-		
-		// SHOW STATS
-        ns.print("\n" + "Top member Hack Skill Level:");
+        const skillSort = members.sort((b, a) => ns.gang.getMemberInformation(a).hack - ns.gang.getMemberInformation(b).hack)
+
+        // SHOW STATS
+        ns.print("\n" + "Members sorted by Hack Skill Level:");
         for (var i = 0; i < skillSort.length; ++i) {
             var level = ns.gang.getMemberInformation(skillSort[i]).hack;
-            ns.print("   " + "💻 " + skillSort[i] + ", Hack Skill Level: " + level + "\n");
 
-			// ASSIGN JOBS
+            //ns.print("   " + "💻 " + skillSort[i] + ", Hack skill level: " + level + "");
+            memberStats.push(skillSort[i] + "|" + level);
+
+            // ASSIGN JOBS
             GiveAssignments(skillSort[i]);
-            ns.print("\n");
         }
 
+        // MEMBER STATS        
+        let memberDataObj = {}; // Initialize empty object to store data
+        let memberData = []; // Initialize empty array to store final data
+
+        let longest0 = 0;
+        let longest1 = 0;
+        let longest2 = 0;
+        let longest3 = 0;
+        let longest4 = 0;
+
+        // Loop through each record in _memberStats array
+        for (let i = 0; i < memberStats.length; i++) {
+             let retval = memberStats[i] + ''; // Split each record into name and stat using the pipe symbol
+             let record = retval.split("|");
+             let name = record[0]; 
+             let stat = record[1];
+
+            // Check if name already exists in memberDataObj
+            if (memberDataObj.hasOwnProperty(name)) {                
+                memberDataObj[name] += "|" + stat; // If it exists, concatenate the stat with existing data
+            } else {                
+                memberDataObj[name] = name + "|" + stat; // If it doesn't exist, create a new entry for the name in memberDataObj
+            }
+        }
+
+        // Loop through memberDataObj and add each entry to memberData array
+        for (let name in memberDataObj) {
+            memberData.push(memberDataObj[name]);
+        }
+
+        // Loop through to format
+        memberData.forEach((e) => {
+            var data = e + '';
+            var splitStr = data.split("|");
+
+            var name = splitStr[0]; 
+            var hacklevel = splitStr[1];
+            var wantedlevel = splitStr[2];
+            var respect = splitStr[3];
+            var task = splitStr[4];
+
+            longest0 = Math.max(name.length, longest0)
+            longest1 = Math.max(hacklevel.length, longest1)
+            longest2 = Math.max(wantedlevel.length, longest2)
+            longest3 = Math.max(respect.length, longest3)
+            longest4 = Math.max(task.length, longest4)            
+        });
+
+        // Show it.
+        memberData.forEach((e) => {
+            var data = e + '';
+            var splitStr = data.split("|");
+
+            var name = splitStr[0];
+            var hacklevel = splitStr[1];
+            var wantedlevel = splitStr[2];
+            var respect = splitStr[3];
+            var task = splitStr[4];
+
+            var num0 = parseFloat(wantedlevel).toFixed(2);
+            var num1 = parseFloat(respect).toFixed(2);
+
+            ns.print(                 name.padStart(longest0 + 1)
+                + ", 💻hack: " +      hacklevel.padStart(longest1 + 1) 
+                + ", 🕶️wanted: " +    num0.padStart(5) 
+                + ", 💪respect: " +   num1.padStart(8) 
+                + ", 💵task: " +      task.padStart(longest4 + 1)  
+                + " \n");
+        });
+
+        // RESET ENVIRONMNENT
+        memberDataObj = {};
+        memberStats.length = 0;
+
+        ns.print(" \n");
         await ns.sleep(delay);
-    }
+    }    
 
     // Recruit a new prospect to a full gang member.
     async function RecruitProspect() {
@@ -181,7 +281,7 @@ export async function main(ns) {
     async function Ascend(name) {
         ns.gang.ascendMember(name); // Ascend the specified Gang Member.
         ns.print(name + " Has ascended!")
-	}
+    }
 
     // Buy HackTools, HackAugs, CrimeAugs, Weapons, Armor, Vehicles
     function Prepare(name) {
@@ -303,7 +403,7 @@ export async function main(ns) {
             }
         });
 
-		// SHOW INVENTORY
+        // SHOW INVENTORY
         if (alreadyOwns_HackAugs != "" ||
             alreadyOwns_CrimeAugs != "" ||
             alreadyOwns_Weapons != "" ||
@@ -312,10 +412,9 @@ export async function main(ns) {
             alreadyOwns_Rootkits != "") {
 
             var result = alreadyOwns_HackAugs + alreadyOwns_CrimeAugs + alreadyOwns_Weapons + alreadyOwns_Armor + alreadyOwns_Vehicles + alreadyOwns_Rootkits;
-
             result = result.substring(0, result.length - 2); // remove last comma.
-
             //ns.print("   " + name + " already owns: " + result);
+            memberPrepped.push(name); // Add member to list of completed prepped names.
         }
     }
 
@@ -329,11 +428,11 @@ export async function main(ns) {
         var memberInfo = ns.gang.getMemberInformation(member);
 
         var wantedLevel = memberInfo.wantedLevelGain;
-        var earnedRespect = memberInfo.earnedRespect; // ns.gang.getMemberInformation(member).earnedRespect;
+        var earnedRespect = memberInfo.earnedRespect;
 
-        // SHOW STATS
-        ns.print("   " + "🕶️ " + member + ", wantedLevel: " + wantedLevel + "\n");
-        ns.print("   " + "💪 "+ member + ", earnedRespect: " + earnedRespect + "\n");
+        // GET STATS
+        memberStats.push(member  + "|" +  wantedLevel);
+        memberStats.push(member  + "|" +  earnedRespect);
 
         // CRIME
         if (!gangInfo.isHacking) {
@@ -345,10 +444,10 @@ export async function main(ns) {
         var statsTarget = 50;
 
         if ((gangInfo.isHacking && memberInfo.hacking < statsTarget) || (!gangInfo.isHacking &&
-                memberInfo.strength < statsTarget &&
-                memberInfo.agility < statsTarget &&
-                memberInfo.charisma < statsTarget &&
-                memberInfo.defense < statsTarget)) {
+            memberInfo.strength < statsTarget &&
+            memberInfo.agility < statsTarget &&
+            memberInfo.charisma < statsTarget &&
+            memberInfo.defense < statsTarget)) {
 
             // TRAIN
             task = training[getRandomInt(training.length)]; // Train Combat, Train Hacking, Train Charisma
@@ -366,11 +465,10 @@ export async function main(ns) {
 
         // ASSIGN TASK
         if (ns.gang.setMemberTask(member, task)) {
-            ns.print("   " + "💵 " +  member + " was assigned " + task + "\n");
+            memberStats.push(member  + "|" +  task);
         } else {
             ns.print("   unable to assign " + member + " with " + task + "\n");
         }
-
     }
 
     function getRandomInt(max) {
