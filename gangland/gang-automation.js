@@ -171,7 +171,7 @@ export async function main(ns) {
             memberStats.push(skillSort[i] + "|" + level);
 
             // ASSIGN JOBS
-            GiveAssignments(skillSort[i]);
+            GiveAssignments(skillSort[i], level);
         }
 
         // MEMBER STATS        
@@ -186,15 +186,15 @@ export async function main(ns) {
 
         // Loop through each record in _memberStats array
         for (let i = 0; i < memberStats.length; i++) {
-             let retval = memberStats[i] + ''; // Split each record into name and stat using the pipe symbol
-             let record = retval.split("|");
-             let name = record[0]; 
-             let stat = record[1];
+            let retval = memberStats[i] + ''; // Split each record into name and stat using the pipe symbol
+            let record = retval.split("|");
+            let name = record[0];
+            let stat = record[1];
 
             // Check if name already exists in memberDataObj
-            if (memberDataObj.hasOwnProperty(name)) {                
+            if (memberDataObj.hasOwnProperty(name)) {
                 memberDataObj[name] += "|" + stat; // If it exists, concatenate the stat with existing data
-            } else {                
+            } else {
                 memberDataObj[name] = name + "|" + stat; // If it doesn't exist, create a new entry for the name in memberDataObj
             }
         }
@@ -209,7 +209,7 @@ export async function main(ns) {
             var data = e + '';
             var splitStr = data.split("|");
 
-            var name = splitStr[0]; 
+            var name = splitStr[0];
             var hacklevel = splitStr[1];
             var wantedlevel = splitStr[2];
             var respect = splitStr[3];
@@ -219,7 +219,7 @@ export async function main(ns) {
             longest1 = Math.max(hacklevel.length, longest1)
             longest2 = Math.max(wantedlevel.length, longest2)
             longest3 = Math.max(respect.length, longest3)
-            longest4 = Math.max(task.length, longest4)            
+            longest4 = Math.max(task.length, longest4)
         });
 
         // Show it.
@@ -236,11 +236,11 @@ export async function main(ns) {
             var num0 = parseFloat(wantedlevel).toFixed(2);
             var num1 = parseFloat(respect).toFixed(2);
 
-            ns.print(                 name.padStart(longest0 + 1)
-                + ", 💻hack: " +      hacklevel.padStart(longest1 + 1) 
-                + ", 🕶️wanted: " +    num0.padStart(5) 
-                + ", 💪respect: " +   num1.padStart(8) 
-                + ", 💵task: " +      task.padStart(longest4 + 1)  
+            ns.print(name.padStart(longest0 + 1)
+                + ", 💻hack: " + hacklevel.padStart(longest1 + 1)
+                + ", 🕶️wanted: " + num0.padStart(5)
+                + ", 💪respect: " + num1.padStart(8)
+                + ", 💵task: " + task.padStart(longest4 + 1)
                 + " \n");
         });
 
@@ -250,7 +250,7 @@ export async function main(ns) {
 
         ns.print(" \n");
         await ns.sleep(delay);
-    }    
+    }
 
     // Recruit a new prospect to a full gang member.
     async function RecruitProspect() {
@@ -419,7 +419,7 @@ export async function main(ns) {
     }
 
     // Attempt to assign Gang Member specified tasks
-    function GiveAssignments(member) {
+    function GiveAssignments(member, level) {
 
         var gangInfo = null;
         var gangInfo = ns.gang.getGangInformation();
@@ -431,8 +431,8 @@ export async function main(ns) {
         var earnedRespect = memberInfo.earnedRespect;
 
         // GET STATS
-        memberStats.push(member  + "|" +  wantedLevel);
-        memberStats.push(member  + "|" +  earnedRespect);
+        memberStats.push(member + "|" + wantedLevel);
+        memberStats.push(member + "|" + earnedRespect);
 
         // CRIME
         if (!gangInfo.isHacking) {
@@ -443,7 +443,21 @@ export async function main(ns) {
         var task = "";
         var statsTarget = 50;
 
-        if ((gangInfo.isHacking && memberInfo.hacking < statsTarget) || (!gangInfo.isHacking &&
+
+        // THIS IS NON-NEGOTIABLE. IF HACK LEVEL IS < 1000, WE REQUIRES STRICT TRAINING. 
+        // IGNORE ALL OTHER JOBS/TASKS.
+        if (level < 1000) {
+
+            // TRAIN
+            task = training[1]; // Train Combat 0, Train Hacking 1, Train Charisma 2
+
+            if (ns.gang.setMemberTask(member, task)) {
+                memberStats.push(member + "|" + task);
+            }
+
+            return; // GET OUT.
+
+        } else if ((gangInfo.isHacking && memberInfo.hacking < statsTarget) || (!gangInfo.isHacking &&
             memberInfo.strength < statsTarget &&
             memberInfo.agility < statsTarget &&
             memberInfo.charisma < statsTarget &&
@@ -455,7 +469,7 @@ export async function main(ns) {
         } else if (wantedLevel > 1) {
             // DECREASE WANTED LEVEL
             task = topVirtuous[getRandomInt(topVirtuous.length)]; // Ethical Hacking, Vigilante Justice  
-        } else if (earnedRespect <= 0.025) {
+        } else if (earnedRespect <= 100) {
             // BUILD RESPECT
             task = topRespect[getRandomInt(topRespect.length)]; // Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
         } else {
@@ -465,7 +479,7 @@ export async function main(ns) {
 
         // ASSIGN TASK
         if (ns.gang.setMemberTask(member, task)) {
-            memberStats.push(member  + "|" +  task);
+            memberStats.push(member + "|" + task);
         } else {
             ns.print("   unable to assign " + member + " with " + task + "\n");
         }
