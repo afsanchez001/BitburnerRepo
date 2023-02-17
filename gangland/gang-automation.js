@@ -11,20 +11,6 @@ export async function main(ns) {
 								-> power/money (keep win chances > 55%) 
 									-> territory 100% 
 										-> money/rep
-
-"How do I determine what level my members skills need to be to benefit from a specific task?"
---------------------------------------------------------------------------------------------
-    Formulas.exe has functions to calculate the $/wanted/rep gain of a task for a given member. 
-    Without it you can use guestimates, generally speaking terrorism is worth it at ~600 stats 
-    (with others on vigilante to compensate) and you need around 1000 stats for it to be pure profit (more rep than wanted).
-
-GangFormulas interface
----------------------
-    ns.formulas.gang.____
-    (These are the functions under that namespace, they do pretty much what you're looking for)
-    https://github.com/bitburner-official/bitburner-src/blob/dev/markdown/bitburner.gangformulas.md
-
-
 */
 
     ns.disableLog("ALL");
