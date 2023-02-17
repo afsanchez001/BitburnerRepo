@@ -444,7 +444,7 @@ export async function main(ns) {
         var statsTarget = 50;
 
 
-        // THIS IS NON-NEGOTIABLE. IF HACK LEVEL IS < 1000, WE REQUIRES STRICT TRAINING. 
+        // THIS IS NON-NEGOTIABLE. IF HACK LEVEL < 1000, WE REQUIRE STRICT TRAINING. 
         // IGNORE ALL OTHER JOBS/TASKS.
         if (level < 1000) {
 
