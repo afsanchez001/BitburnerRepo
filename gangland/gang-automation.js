@@ -11,6 +11,20 @@ export async function main(ns) {
 								-> power/money (keep win chances > 55%) 
 									-> territory 100% 
 										-> money/rep
+
+"How do I determine what level my members skills need to be to benefit from a specific task?"
+--------------------------------------------------------------------------------------------
+    Formulas.exe has functions to calculate the $/wanted/rep gain of a task for a given member. 
+    Without it you can use guestimates, generally speaking terrorism is worth it at ~600 stats 
+    (with others on vigilante to compensate) and you need around 1000 stats for it to be pure profit (more rep than wanted).
+
+GangFormulas interface
+---------------------
+    ns.formulas.gang.____
+    (These are the functions under that namespace, they do pretty much what you're looking for)
+    https://github.com/bitburner-official/bitburner-src/blob/dev/markdown/bitburner.gangformulas.md
+
+
 */
 
     ns.disableLog("ALL");
@@ -116,16 +130,16 @@ export async function main(ns) {
 		// RECRUIT
         if (ns.gang.canRecruitMember()) {            
 			ns.print("\n" + "Recruiting new prospect..." + "\n");            
-			RecruitProspect();
+			await RecruitProspect();
         } else {
             // ns.print("\n" + "Cannot recruit at this time. Increase [Respect] to recruit." + "\n");
         }
 
 		// ASCEND
         for (var i = 0; i < members.length; ++i) {
-            if (DoAscension(members[i])) {
+            if (await DoAscension(members[i])) {
                 ns.print("Ascending member: " + members[i] + "\n")
-                Ascend(members[i]);
+                await Ascend(members[i]);
             } else {
                 // ns.print("Not optimal to ascend member: " + members[i] + "\n")
             }    
@@ -162,7 +176,7 @@ export async function main(ns) {
     }
 
     // Determine if we should ascend this gang member
-    function DoAscension(name) {
+    async function DoAscension(name) {
         let memberInfo = ns.gang.getMemberInformation(name);
         const ascResult = ns.gang.getAscensionResult(memberInfo.name); // Get the result of an ascension without ascending.
         // Only ascend if the multiplier is less than 10 and will increase by at least 2
@@ -178,7 +192,7 @@ export async function main(ns) {
     }
 
     // Ascend this current gang member
-    function Ascend(name) {
+    async function Ascend(name) {
         ns.gang.ascendMember(name); // Ascend the specified Gang Member.
         ns.print(name + " Has ascended!")
 	}
