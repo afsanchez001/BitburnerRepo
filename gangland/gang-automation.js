@@ -125,8 +125,8 @@ export async function main(ns) {
             ns.print("\n" + " Recruiting new prospect..." + "\n");
             await RecruitProspect();
         } else {
-            ns.print("\n" + "🔼 Increase [Respect] levels to recruit 'Prospects'." + "\n"); // 🆙⬆️
-            ns.print(" \n");
+            ns.print("\n" + "🔼 Increased 'Respect' level required to recruit new 'Prospects'." + "\n"); // 🆙⬆️
+            //ns.print(" \n");
         }
 
         // ASCEND
