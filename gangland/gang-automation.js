@@ -2,16 +2,45 @@
 export async function main(ns) {
 
     /*
-            General gang action plan: 
-                Respect 
-                    -> 12 members 
-                        -> power 
-                            -> all win chances >55% 
-                                -> engage in territory warfare on 
-                                    -> power/money (keep win chances > 55%) 
-                                        -> territory 100% 
-                                            -> money/rep
+    
+    General gang action plan: 
+        Respect 
+            -> 12 members 
+                -> power 
+                    -> all win chances >55% 
+                        -> engage in territory warfare on 
+                            -> power/money (keep win chances > 55%) 
+                                -> territory 100% 
+                                    -> money/rep
     */
+
+    /*
+        OVERRIDE PARAM 
+        (Forces all members to perform a singular task.)
+
+        No args = normal operation.
+
+        Optional parameters are:
+        respect
+        earn
+        decrease
+        train
+    */ 
+
+    const [override] = ns.args;
+    var overrideTask = "";
+
+    if (override == undefined || override.trim() == "") {
+        overrideTask = ""; // ignore
+    } else if (override == "respect") {
+        overrideTask = "Cyberterrorism";
+    } else if (override == "earn") {
+        overrideTask = "Money Laundering";
+    } else if (override == "decrease") {
+        overrideTask = "Ethical Hacking";
+    } else if (override == "train") {
+        overrideTask = "Train Hacking";
+    }
 
     ns.disableLog("ALL");
     ns.clearLog();
@@ -32,7 +61,7 @@ export async function main(ns) {
 
     const memberPrepped = [];
 
-    const membersToAscend = [];
+    //const membersToAscend = [];
     const memberStats = [];
 
     const delay = 100;
@@ -102,23 +131,31 @@ export async function main(ns) {
         const gangRespect = parseFloat(ns.gang.getGangInformation().respect).toFixed(2);
 
         ns.print(" \n");
-        ns.print(" Money available: " + "🏦💲 " + ns.nFormat(money, "0.000a"));
-        ns.print(" Gang: 🌆 " + gangInfo.faction + " 💣");
-        ns.print(" Gang income/sec: 💵 " + ns.nFormat(gangIncome, "0.000a"));
-        ns.print(" Gang respect: 🦾" + gangRespect);
+        ns.print(" 🌆 Gang: " + gangInfo.faction + " 💣");
+        ns.print(" 🏦 Money available: 💲" + ns.nFormat(money, "0.000a"));
+        ns.print(" 💵 Gang income/sec: 💲" + ns.nFormat(gangIncome, "0.000a"));
+        ns.print(" 🦾 Gang respect: " + gangRespect);
 
         var members = ns.gang.getMemberNames();
         var prospects = MemberNames.filter(c => !members.includes(c));
 
-        ns.print("\n" + " Current Members:" + "\n");
+        // FULL MEMBERS
+        ns.print("\n" + " 😈 Current Members:" + "\n");
+        var team = "";
         for (var i = 0; i < members.length; ++i) {
-            ns.print("    " + "😈 " + members[i] + "\n");
+            team += "" + members[i] + ", ";
         }
+        team = team.substring(0, team.length - 2); // remove last comma.
+        ns.print("    " + team + "\n");
 
-        ns.print("\n" + " Prospects:" + "\n");
+        // PROSPECTS
+        ns.print("\n" + " 😐 Prospects:" + "\n");
+        team = ""; //reset
         for (var i = 0; i < prospects.length; ++i) {
-            ns.print("    " + "😐 " + prospects[i] + "\n");
+            team += "" + prospects[i] + ", ";
         }
+        team = team.substring(0, team.length - 2); // remove last comma.
+        ns.print("    " + team + "\n");
 
         // RECRUIT
         if (ns.gang.canRecruitMember()) {
@@ -463,13 +500,23 @@ export async function main(ns) {
             // Are we a Hacking gang? 
             // TRAIN HACKING
             if (gangInfo.isHacking) {
-                task = training[1]; // Train Combat 0, Train Hacking 1, Train Charisma 2
+                // CHECK OVERRIDE
+                if (overrideTask != "") {
+                    task = overrideTask;
+                } else {
+                    task = training[1]; // Train Combat 0, Train Hacking 1, Train Charisma 2
+                }
             }
 
             // Are we a Combat gang? 
             // TRAIN COMBAT
             if (!gangInfo.isHacking) {
-                task = training[0]; // Train Combat 0, Train Hacking 1, Train Charisma 2
+                // CHECK OVERRIDE
+                if (overrideTask != "") {
+                    task = overrideTask;
+                } else {
+                    task = training[0]; // Train Combat 0, Train Hacking 1, Train Charisma 2
+                }
             }
 
             // not using ... && memberInfo.strength < statsTarget && memberInfo.agility < statsTarget && memberInfo.charisma < statsTarget && memberInfo.defense < statsTarget
@@ -482,14 +529,29 @@ export async function main(ns) {
             }
 
         } else if (wantedLevel >= 10) {
-            // DECREASE WANTED LEVEL
-            task = topVirtuous[getRandomInt(topVirtuous.length)]; // Ethical Hacking, Vigilante Justice  
+            // CHECK OVERRIDE
+            if (overrideTask != "") {
+                task = overrideTask;
+            } else {
+                // DECREASE WANTED LEVEL
+                task = topVirtuous[getRandomInt(topVirtuous.length)]; // Ethical Hacking, Vigilante Justice  
+            }
         } else if (earnedRespect < 1000) {
-            // BUILD RESPECT
-            task = topRespect[getRandomInt(topRespect.length)]; // Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
+            // CHECK OVERRIDE
+            if (overrideTask != "") {
+                task = overrideTask;
+            } else {
+                // BUILD RESPECT
+                task = topRespect[getRandomInt(topRespect.length)]; // Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
+            }
         } else if (earnedRespect > 1000) {
-            // EARN MONEY				
-            task = topEarners[getRandomInt(topEarners.length)]; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
+            // CHECK OVERRIDE
+            if (overrideTask != "") {
+                task = overrideTask;
+            } else {
+                // EARN MONEY				
+                task = topEarners[getRandomInt(topEarners.length)]; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
+            }
         }
 
         // ASSIGN TASK
