@@ -164,7 +164,6 @@ export async function main(ns) {
             }
         }
 
-
         // GET ALL HACK SKILL LEVELS. Sort members from highest to lowest Hack().
         const skillSort = members.sort((b, a) => ns.gang.getMemberInformation(a).hack - ns.gang.getMemberInformation(b).hack)
 
@@ -268,24 +267,19 @@ export async function main(ns) {
     }
 
     // Determine if we should ascend this gang member
-    async function DoAscension(name) {
-        
-        let memberInfo = ns.gang.getMemberInformation(name);
-        
+    async function DoAscension(name) {        
+        let memberInfo = ns.gang.getMemberInformation(name);        
         var ascResult = ns.gang.getAscensionResult(memberInfo.name); // Get the result of an ascension without ascending.
         var strengthMultiplier = ascResult.str; // Strength multiplier gained from ascending
-        var currentMultiplier = memberInfo.str_asc_mult; // current multiplier
+        var currentMultiplier = memberInfo.str_asc_mult; // CURRENT multiplier
 
         // Only ascend if the multiplier is less than 10 and will increase by at least 2
-        if (memberInfo.str_asc_mult < 10 && ascResult != undefined) {
-        
+        if (memberInfo.str_asc_mult < 10 && ascResult != undefined) {        
             let multchange = (currentMultiplier * strengthMultiplier) - currentMultiplier;        
-
             if (multchange >= 2) {
                 // Ascend
                 return (ascResult.hack >= 2); // Hacking multiplier gained from ascending
-            }        
-
+            }
         } else if (ascResult == undefined) {
             return false;
         }
