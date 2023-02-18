@@ -102,37 +102,37 @@ export async function main(ns) {
         const gangRespect = parseFloat(ns.gang.getGangInformation().respect).toFixed(2);
 
         ns.print(" \n");
-        ns.print("Money available: " + "🏦💲 " + ns.nFormat(money, "0.000a"));
-        ns.print("Gang: 🌆 " + gangInfo.faction + " 💣");
-        ns.print("Gang income/sec: 💵 " + ns.nFormat(gangIncome, "0.000a"));
-        ns.print("Gang respect: 🦾" + gangRespect);
+        ns.print(" Money available: " + "🏦💲 " + ns.nFormat(money, "0.000a"));
+        ns.print(" Gang: 🌆 " + gangInfo.faction + " 💣");
+        ns.print(" Gang income/sec: 💵 " + ns.nFormat(gangIncome, "0.000a"));
+        ns.print(" Gang respect: 🦾" + gangRespect);
 
         var members = ns.gang.getMemberNames();
         var prospects = MemberNames.filter(c => !members.includes(c));
 
-        ns.print("\n" + "Current Members:" + "\n");
+        ns.print("\n" + " Current Members:" + "\n");
         for (var i = 0; i < members.length; ++i) {
             ns.print("    " + "😈 " + members[i] + "\n");
         }
 
-        ns.print("\n" + "Prospects:" + "\n");
+        ns.print("\n" + " Prospects:" + "\n");
         for (var i = 0; i < prospects.length; ++i) {
             ns.print("    " + "😐 " + prospects[i] + "\n");
         }
 
         // RECRUIT
         if (ns.gang.canRecruitMember()) {
-            ns.print("\n" + "Recruiting new prospect..." + "\n");
+            ns.print("\n" + " Recruiting new prospect..." + "\n");
             await RecruitProspect();
         } else {
-            // ns.print("\n" + "🔼 Increase [Respect] levels to recruit 'Prospects'." + "\n"); // 🆙⬆️
-            // ns.print(" \n");
+            ns.print("\n" + "🔼 Increase [Respect] levels to recruit 'Prospects'." + "\n"); // 🆙⬆️
+            ns.print(" \n");
         }
 
         // ASCEND
         for (var i = 0; i < members.length; ++i) {
             if (await DoAscension(members[i])) {
-                ns.print("Ascending member: " + members[i] + "\n")
+                ns.print(" Ascending member: " + members[i] + "\n")
                 await Ascend(members[i]);
             } else {
                 // PUT IN ASCENDING WAIT-LIST
@@ -145,13 +145,12 @@ export async function main(ns) {
         }
 
         // Get our list of people to ascend.  
-        // var ascendList = "";
+        // var ascendList = "";        
         // membersToAscend.forEach((e) => {
         //     ascendList += e + ", ";
         // });
         // ascendList = ascendList.substring(0, ascendList.length - 2); // remove last comma.
-
-        //ns.print("🛑 Not optimal to ascend current member wait-list: "+ ascendList +" \n"); // 
+        // ns.print("🛑 Not optimal to ascend current member wait-list: "+ ascendList +" \n");
 
         // CHECK IF ALREADY PREPPED
         for (var i = 0; i < members.length; ++i) {
@@ -159,7 +158,7 @@ export async function main(ns) {
                 continue;
             } else {
                 // PREP MEMBER        
-                ns.print("Prepping member: " + members[i] + "\n")
+                ns.print(" Prepping member: " + members[i] + "\n")
                 Prepare(members[i]);
             }
         }
@@ -168,7 +167,7 @@ export async function main(ns) {
         const skillSort = members.sort((b, a) => ns.gang.getMemberInformation(a).hack - ns.gang.getMemberInformation(b).hack)
 
         // SHOW STATS
-        ns.print("\n" + "Members sorted by Hack Skill Level:");
+        ns.print("\n" + " Members sorted by Hack Skill Level:");
         for (var i = 0; i < skillSort.length; ++i) {
             var level = ns.gang.getMemberInformation(skillSort[i]).hack;
 
@@ -266,21 +265,23 @@ export async function main(ns) {
         await ns.sleep(10);
     }
 
+
     // Determine if we should ascend this gang member
-    async function DoAscension(name) {        
-        let memberInfo = ns.gang.getMemberInformation(name);        
+    async function DoAscension(name) {
+        let memberInfo = ns.gang.getMemberInformation(name);
         var ascResult = ns.gang.getAscensionResult(memberInfo.name); // Get the result of an ascension without ascending.
         var strengthMultiplier = ascResult.str; // Strength multiplier gained from ascending
         var currentMultiplier = memberInfo.str_asc_mult; // CURRENT multiplier
 
         // Only ascend if the multiplier is less than 10 and will increase by at least 2
-        if (memberInfo.str_asc_mult < 10 && ascResult != undefined) {        
-            let multchange = (currentMultiplier * strengthMultiplier) - currentMultiplier;        
+        if (memberInfo.str_asc_mult < 10 && ascResult != undefined) {
+            let multchange = (currentMultiplier * strengthMultiplier) - currentMultiplier;
             if (multchange >= 2) {
                 // Ascend
                 return (ascResult.hack >= 2); // Hacking multiplier gained from ascending
             }
         } else if (ascResult == undefined) {
+
             return false;
         }
     }
