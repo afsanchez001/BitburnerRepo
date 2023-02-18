@@ -98,12 +98,14 @@ export async function main(ns) {
         var money = ns.getServerMoneyAvailable("home");
 
         const gangInfo = ns.gang.getGangInformation();
-        //const income = ns.gang.getGangInformation().moneyGainRate;🔥
+        const gangIncome = ns.gang.getGangInformation().moneyGainRate * 5;
+        const gangRespect = parseFloat(ns.gang.getGangInformation().respect).toFixed(2);
 
         ns.print(" \n");
-        ns.print("Server money: " + "💲 " + ns.nFormat(money, "0.000a"));
-        ns.print("Gang name: 🌆 " + gangInfo.faction);
-        //ns.print("Gang income: " + ns.nFormat(income, "0.000a"));
+        ns.print("Money available: " + "🏦💲 " + ns.nFormat(money, "0.000a"));
+        ns.print("Gang: 🌆 " + gangInfo.faction + " 💣");
+        ns.print("Gang income/sec: 💵 " + ns.nFormat(gangIncome, "0.000a"));
+        ns.print("Gang respect: 🦾" + gangRespect);
 
         var members = ns.gang.getMemberNames();
         var prospects = MemberNames.filter(c => !members.includes(c));
@@ -123,8 +125,8 @@ export async function main(ns) {
             ns.print("\n" + "Recruiting new prospect..." + "\n");
             await RecruitProspect();
         } else {
-            ns.print("\n" + "⬆️ Increase [Respect] levels to recruit 'Prospects'." + "\n");
-            ns.print(" \n");
+            // ns.print("\n" + "🔼 Increase [Respect] levels to recruit 'Prospects'." + "\n"); // 🆙⬆️
+            // ns.print(" \n");
         }
 
         // ASCEND
@@ -133,15 +135,26 @@ export async function main(ns) {
                 ns.print("Ascending member: " + members[i] + "\n")
                 await Ascend(members[i]);
             } else {
-                // ASCENDING WAIT-LIST...
-                if (membersToAscend.includes(members[i])) {
-                    continue;
-                } else {
-                    membersToAscend.push(members[i]);
-                }
+                // PUT IN ASCENDING WAIT-LIST
+                // if (membersToAscend.includes(members[i])) {
+                //     continue; // ignore
+                // } else {
+                //     membersToAscend.push(members[i]); // add them
+                // }
             }
+        }
 
-            // CHECK IF ALREADY PREPPED
+        // Get our list of people to ascend.  
+        // var ascendList = "";
+        // membersToAscend.forEach((e) => {
+        //     ascendList += e + ", ";
+        // });
+        // ascendList = ascendList.substring(0, ascendList.length - 2); // remove last comma.
+
+        //ns.print("🛑 Not optimal to ascend current member wait-list: "+ ascendList +" \n"); // 
+
+        // CHECK IF ALREADY PREPPED
+        for (var i = 0; i < members.length; ++i) {
             if (memberPrepped.includes(members[i])) {
                 continue;
             } else {
@@ -151,13 +164,6 @@ export async function main(ns) {
             }
         }
 
-        var ascendList = "";
-        membersToAscend.forEach((e) => {
-            ascendList += e + ", ";
-        });
-        ascendList = ascendList.substring(0, ascendList.length - 2); // remove last comma.
-
-        ns.print("🛑 Not optimal to ascend current member wait-list. \n"); // " + ascendList + "
 
         // GET ALL HACK SKILL LEVELS. Sort members from highest to lowest Hack().
         const skillSort = members.sort((b, a) => ns.gang.getMemberInformation(a).hack - ns.gang.getMemberInformation(b).hack)
@@ -239,7 +245,7 @@ export async function main(ns) {
             ns.print(name.padStart(longest0 + 1)
                 + ", 💻hack: " + hacklevel.padStart(longest1 + 1)
                 + ", 🕶️wanted: " + num0.padStart(9)
-                + ", 💪respect: " + num1.padStart(8)
+                + ", 🦾respect: " + num1.padStart(9)
                 + ", 💵task: " + task.padStart(longest4 + 1)
                 + " \n");
         });
@@ -263,15 +269,23 @@ export async function main(ns) {
 
     // Determine if we should ascend this gang member
     async function DoAscension(name) {
+        
         let memberInfo = ns.gang.getMemberInformation(name);
-        const ascResult = ns.gang.getAscensionResult(memberInfo.name); // Get the result of an ascension without ascending.
+        
+        var ascResult = ns.gang.getAscensionResult(memberInfo.name); // Get the result of an ascension without ascending.
+        var strengthMultiplier = ascResult.str; // Strength multiplier gained from ascending
+        var currentMultiplier = memberInfo.str_asc_mult; // current multiplier
+
         // Only ascend if the multiplier is less than 10 and will increase by at least 2
         if (memberInfo.str_asc_mult < 10 && ascResult != undefined) {
-            let multchange = (memberInfo.str_asc_mult * ascResult.str) - memberInfo.str_asc_mult;
+        
+            let multchange = (currentMultiplier * strengthMultiplier) - currentMultiplier;        
+
             if (multchange >= 2) {
                 // Ascend
                 return (ascResult.hack >= 2); // Hacking multiplier gained from ascending
-            }
+            }        
+
         } else if (ascResult == undefined) {
             return false;
         }
@@ -280,7 +294,7 @@ export async function main(ns) {
     // Ascend this current gang member
     async function Ascend(name) {
         ns.gang.ascendMember(name); // Ascend the specified Gang Member.
-        ns.print(name + " Has ascended!")
+        ns.print(name + " Has ascended⏫.")
     }
 
     // Buy HackTools, HackAugs, CrimeAugs, Weapons, Armor, Vehicles
@@ -459,7 +473,7 @@ export async function main(ns) {
 
             // Are we a Combat gang? 
             // TRAIN COMBAT
-            if (!gangInfo.isHacking) { 
+            if (!gangInfo.isHacking) {
                 task = training[0]; // Train Combat 0, Train Hacking 1, Train Charisma 2
             }
 
@@ -470,7 +484,7 @@ export async function main(ns) {
             if (ns.gang.setMemberTask(member, task)) {
                 memberStats.push(member + "|" + task);
                 return; // GET OUT.
-            }            
+            }
 
         } else if (wantedLevel >= 10) {
             // DECREASE WANTED LEVEL
