@@ -12,6 +12,7 @@ export async function main(ns) {
     Applied new maxRam implmentation from u/InactiveTerm.
     Removed fserver, player redundancies.
     Applied check for if we have enough RAM to do a full run and runs at minimum security level, from u/Jsmall6120.
+    Only need to use protected_targets when scanning ALL servers to hack. If only doing a few, it's ignored.
     
     PERSONAL NOTE: Running this for 10 minutes, I reached $75b/sec. THAT IS INSANE!!! - u/DukeNukemDad
 */
