@@ -1,7 +1,7 @@
 /** @param {NS} ns **/
 export async function main(ns) {
 /*
-    Adapted from `OP.ns` written by u/__Aimbot__ you, 
+    Adapted from `OP.ns` written by u/__Aimbot__ 
     found @ https://www.reddit.com/r/Bitburner/comments/rm48o1/the_best_hacking_approach_ive_seen_so_far/
 
     Updated 2/19/2023:
