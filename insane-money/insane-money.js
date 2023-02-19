@@ -34,7 +34,7 @@ export async function main(ns) {
 
     // ONLY the TOP FOUR from 'bestmoney' alias ... 'run find-targets.js maxMoney'
     var servers = ["ecorp", "megacorp", "blade", "nwo"]; // serverList(ns); <--- grabbing all the servers is fine, but testing on the TOP 4 is more fun.
-    var protected_targets = ["home", "pserv-1", "darkweb", "CSEC", "I.I.I.I", "run4theh111z", "avmnite-02h", "The-Cave", "w0r1d_d43m0n"]; // avoid these.
+    var protected_targets = ["home", "pserv-0", "pserv-1", "darkweb", "CSEC", "I.I.I.I", "run4theh111z", "avmnite-02h", "The-Cave", "w0r1d_d43m0n"]; // avoid these.
     var unprotected_targets = servers.filter(function (server) {
         return protected_targets.indexOf(server) < 0;
     });
