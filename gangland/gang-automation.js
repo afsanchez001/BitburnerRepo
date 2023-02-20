@@ -130,8 +130,8 @@ export async function main(ns) {
 
         ns.print(" \n");
         ns.print(" 🌆 Gang: " + gangInfo.faction + " 💣");
-        ns.print(" 🏦 Money available: 💲" + ns.nFormat(money, "0.000a"));
-        ns.print(" 💵 Gang income/sec: 💲" + ns.nFormat(gangIncome, "0.000a"));
+        ns.print(" 🏦 Money available: 💲" + FormatNumber(money));
+        ns.print(" 💵 Gang income/sec: 💲" + FormatNumber(gangIncome));
         ns.print(" 🦾 Gang respect: " + gangRespect);
 
         var members = ns.gang.getMemberNames();
@@ -303,7 +303,6 @@ export async function main(ns) {
         ns.gang.setMemberTask(availableNames[0], "Train Hacking"); // Set to train initially.
         await ns.sleep(10);
     }
-
 
     // Determine if we should ascend this gang member
     async function DoAscension(name) {
@@ -500,14 +499,14 @@ export async function main(ns) {
             // not using ... task = training[getRandomInt(training.length)]; // not using 
         }
 
-        if (overrideTask != "") {            
+        if (overrideTask != "") {
             // OVERRIDE TASK
-            task = overrideTask;            
+            task = overrideTask;
             // ASSIGN TASK
             if (ns.gang.setMemberTask(member, task)) {
                 memberStats.push(member + "|" + task);
                 return; // GET OUT.
-            }            
+            }
         }
 
         // THIS IS NON-NEGOTIABLE. IF HACK LEVEL IS < 500, WE REQUIRE STRICT TRAINING. 
@@ -549,6 +548,14 @@ export async function main(ns) {
 
     function getRandomInt(max) {
         return Math.floor(Math.random() * Math.floor(max));
+    }
+
+    function FormatNumber(num) {
+        let symbols = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc"];
+        let i = 0;
+        for (; (num >= 1000) && (i < symbols.length); i++) num /= 1000;
+
+        return ((Math.sign(num) < 0) ? "-$" : "$") + num.toFixed(3) + symbols[i];
     }
 
 }
