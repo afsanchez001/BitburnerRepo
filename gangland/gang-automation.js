@@ -12,9 +12,7 @@ export async function main(ns) {
                             -> power/money (keep win chances > 55%) 
                                 -> territory 100% 
                                     -> money/rep
-    */
-
-    /*
+    ---------------------------------------------------------------
         OVERRIDE PARAM 
         (Forces all members to perform a singular task.)
 
@@ -25,7 +23,7 @@ export async function main(ns) {
         earn
         decrease
         train
-    */ 
+    */
 
     const [override] = ns.args;
     var overrideTask = "";
@@ -73,7 +71,7 @@ export async function main(ns) {
     const Vehicles = ["Ford Flex V20", "White Ferrari", "ATX1070 Superbike", "Mercedes-Benz S9001"];
     const Rootkits = ["NUKE Rootkit", "Soulstealer Rootkit", "Demon Rootkit", "Hmap Node", "Jack the Ripper"];
 
-    const MemberNames = ["Genie", "Myconid", "Ogre", "Pixie", "Treant", "Troglodyte", "Loco", "Puppet", "Stretch", "Eternity", "Zen", "Cable", "Craven"];
+    const MemberNames = ["Genie", "Myconid", "Ogre", "Pixie", "Treant", "Troglodyte", "Loco", "Puppet", "Stretch", "Eternity", "Zen", "Cable"];
 
     var topEarners = []; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
     var topRespect = []; // Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
@@ -155,15 +153,19 @@ export async function main(ns) {
             team += "" + prospects[i] + ", ";
         }
         team = team.substring(0, team.length - 2); // remove last comma.
-        ns.print("    " + team + "\n");
+
+        if (team.length == 0) {
+            ns.print("    Your gang is maxed out. Good job! Now go do some crime.\n");
+        } else {
+            ns.print("    " + team + "\n");
+            ns.print("\n" + "🔼 Increased 'Respect' level required to recruit new 'Prospects'." + "\n"); // 🆙⬆️
+        }
 
         // RECRUIT
         if (ns.gang.canRecruitMember()) {
             ns.print("\n" + " Recruiting new prospect..." + "\n");
             await RecruitProspect();
         } else {
-            ns.print("\n" + "🔼 Increased 'Respect' level required to recruit new 'Prospects'." + "\n"); // 🆙⬆️
-            //ns.print(" \n");
         }
 
         // ASCEND
@@ -493,65 +495,48 @@ export async function main(ns) {
         var statsTargetHacking = 500; // hacking
         var statsTargetRespect = 1000; // respect
 
+        {
+            // not using ... && memberInfo.strength < statsTarget && memberInfo.agility < statsTarget && memberInfo.charisma < statsTarget && memberInfo.defense < statsTarget
+            // not using ... task = training[getRandomInt(training.length)]; // not using 
+        }
+
+        if (overrideTask != "") {            
+            // OVERRIDE TASK
+            task = overrideTask;            
+            // ASSIGN TASK
+            if (ns.gang.setMemberTask(member, task)) {
+                memberStats.push(member + "|" + task);
+                return; // GET OUT.
+            }            
+        }
+
         // THIS IS NON-NEGOTIABLE. IF HACK LEVEL IS < 500, WE REQUIRE STRICT TRAINING. 
         // IGNORE ALL OTHER JOBS/TASKS.
         if (hackSkillLevel < statsTargetHacking && earnedRespect < statsTargetRespect) {
-
             // Are we a Hacking gang? 
             // TRAIN HACKING
             if (gangInfo.isHacking) {
-                // CHECK OVERRIDE
-                if (overrideTask != "") {
-                    task = overrideTask;
-                } else {
-                    task = training[1]; // Train Combat 0, Train Hacking 1, Train Charisma 2
-                }
+                task = training[1]; // Train Combat 0, Train Hacking 1, Train Charisma 2
             }
-
             // Are we a Combat gang? 
             // TRAIN COMBAT
             if (!gangInfo.isHacking) {
-                // CHECK OVERRIDE
-                if (overrideTask != "") {
-                    task = overrideTask;
-                } else {
-                    task = training[0]; // Train Combat 0, Train Hacking 1, Train Charisma 2
-                }
+                task = training[0]; // Train Combat 0, Train Hacking 1, Train Charisma 2
             }
-
-            // not using ... && memberInfo.strength < statsTarget && memberInfo.agility < statsTarget && memberInfo.charisma < statsTarget && memberInfo.defense < statsTarget
-            // not using ... task = training[getRandomInt(training.length)]; // not using 
-
-            // ASSIGN task
+            // ASSIGN TRAINING task
             if (ns.gang.setMemberTask(member, task)) {
                 memberStats.push(member + "|" + task);
                 return; // GET OUT.
             }
-
-        } else if (wantedLevel >= 10) {
-            // CHECK OVERRIDE
-            if (overrideTask != "") {
-                task = overrideTask;
-            } else {
-                // DECREASE WANTED LEVEL
-                task = topVirtuous[getRandomInt(topVirtuous.length)]; // Ethical Hacking, Vigilante Justice  
-            }
+        } else if (wantedLevel >= 100) {
+            // DECREASE WANTED LEVEL
+            task = topVirtuous[getRandomInt(topVirtuous.length)]; // Ethical Hacking, Vigilante Justice  
         } else if (earnedRespect < 1000) {
-            // CHECK OVERRIDE
-            if (overrideTask != "") {
-                task = overrideTask;
-            } else {
-                // BUILD RESPECT
-                task = topRespect[getRandomInt(topRespect.length)]; // Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
-            }
+            // BUILD RESPECT
+            task = topRespect[getRandomInt(topRespect.length)]; // Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
         } else if (earnedRespect > 1000) {
-            // CHECK OVERRIDE
-            if (overrideTask != "") {
-                task = overrideTask;
-            } else {
-                // EARN MONEY				
-                task = topEarners[getRandomInt(topEarners.length)]; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
-            }
+            // EARN MONEY				
+            task = topEarners[getRandomInt(topEarners.length)]; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
         }
 
         // ASSIGN TASK
