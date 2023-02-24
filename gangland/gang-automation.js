@@ -476,11 +476,6 @@ export async function main(ns) {
         memberStats.push(member + "|" + wantedLevel);
         memberStats.push(member + "|" + earnedRespect);
 
-        // CRIME
-        if (!gangInfo.isHacking) {
-            ns.gang.setMemberTask(member, warfare[0]);
-        }
-
         // HACKING
         var task = "";
         var statsTarget = 50; // strength, agility, charisma, defense
@@ -529,7 +524,11 @@ export async function main(ns) {
         } else if (earnedRespect > 1000) {
             // EARN MONEY				
             task = topEarners[getRandomInt(topEarners.length)]; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
-        }
+        } 
+        // LATER WHEN WE MAKE A COMBAT GANG ... Territory Warfare, figure this out.
+        // else if (!gangInfo.isHacking) {
+        //   ns.gang.setMemberTask(member, warfare[0]);
+        // }
 
         // ASSIGN TASK
         if (ns.gang.setMemberTask(member, task)) {
