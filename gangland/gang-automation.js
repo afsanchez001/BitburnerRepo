@@ -125,7 +125,7 @@ export async function main(ns) {
         var money = ns.getServerMoneyAvailable("home");
 
         const gangInfo = ns.gang.getGangInformation();
-        const gangIncome = ns.gang.getGangInformation().moneyGainRate * 5;
+        const gangIncome = ns.gang.getGangInformation().moneyGainRate * 5; // A tick is every 200ms. To get the actual money/sec, multiple moneyGainRate by 5.
         const gangRespect = parseFloat(ns.gang.getGangInformation().respect).toFixed(2);
 
         ns.print(" \n");
@@ -139,20 +139,13 @@ export async function main(ns) {
 
         // FULL MEMBERS
         ns.print("\n" + " 😈 Current Members:" + "\n");
-        var team = "";
-        for (var i = 0; i < members.length; ++i) {
-            team += "" + members[i] + ", ";
-        }
-        team = team.substring(0, team.length - 2); // remove last comma.
-        ns.print("    " + team + "\n");
+        var team = members.join(", "); // Suggested by u/Aeraggo, 2-23-2023
+        ns.print(" " + team + "\n");
 
         // PROSPECTS
         ns.print("\n" + " 😐 Prospects:" + "\n");
-        team = ""; //reset
-        for (var i = 0; i < prospects.length; ++i) {
-            team += "" + prospects[i] + ", ";
-        }
-        team = team.substring(0, team.length - 2); // remove last comma.
+        team = ""; // reset
+        team = prospects.join(", "); // Suggested by u/Aeraggo, 2-23-2023
 
         if (team.length == 0) {
             ns.print("    Your gang is maxed out. Good job! Now go do some crime.\n");
