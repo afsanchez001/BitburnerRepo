@@ -7,7 +7,7 @@ export async function main(ns) {
 
         After the v2.2.2 release was released on 2/21/2023, the findPlayer() method used in the original script for 'globalThis.webpackJsonp.push()' and payload_id, stopped working.
         
-        I refactored the script to use ns.getPlayer() and ns.gang.getGangInformation() as well as other methods to build out the previous and some new data fot the HUD. 
+        I refactored the script to use ns.getPlayer() and ns.gang.getGangInformation() as well as other methods to build out the previous data, and some new data for the HUD. 
         
         The HUD now also shows the following:    
             • City
