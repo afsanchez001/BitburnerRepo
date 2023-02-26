@@ -5,7 +5,7 @@ export async function main(ns) {
         
         UPDATE 2/25/2023: 
 
-        After the v2.2.2 release was released on 2/21/2023, the findPlayer() method used in the original script for 'globalThis.webpackJsonp.push()' and payload_id, stopped working.
+        after the v2.2.2 release on 2/21/2023, the findPlayer() method used in the original script for 'globalThis.webpackJsonp.push()' and payload_id, stopped working.
         
         I refactored the script to use ns.getPlayer() and ns.gang.getGangInformation() as well as other methods to build out the previous data, and some new data for the HUD. 
         
@@ -20,7 +20,8 @@ export async function main(ns) {
             • Karma
             • Kills
 
-        This hs been tested on v2.2.2 (d3f9554a), and it is working/stable.    
+        This has been tested on v2.2.2 (d3f9554a), and it is working/stable. 
+ 
         - u/DukeNukemDad    
     */
     
