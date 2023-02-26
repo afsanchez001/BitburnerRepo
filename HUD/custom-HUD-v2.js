@@ -21,8 +21,6 @@ export async function main(ns) {
             • Kills
 
         This has been tested on v2.2.2 (d3f9554a), and it is working/stable. 
- 
-        - u/DukeNukemDad    
     */
     
     // ns.clearLog();
