@@ -2,6 +2,14 @@
 export const findPlayer = () => {
 
     /*
+    
+        **************************************
+        ***  THIS VERSION NO LONGER WORKS! ***
+        ***  Use custom-HUD-v2.js          ***
+        ***  2/25/2023                     ***
+        **************************************    
+
+
         https://www.reddit.com/r/Bitburner/comments/10urhbn/custom_overview_stats_but_better/
         Posted by u/I_hate_you_wasTaken 
 
