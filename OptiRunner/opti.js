@@ -24,9 +24,6 @@
             Also, I removed the single_target argument. This script will only iterate through ALL available targets.
 
             And, I added port vulnerability programs (BruteSSH, FTPCrack, etc.), and 'Nuke' incase we need it.
-
-            (1/29/23)
-            Added lines 158 and 161 on u/AnyGiraffe4367's suggestion, from: https://www.reddit.com/r/Bitburner/comments/10nija3/milestone_achieved/
 */
 
 import {
@@ -127,7 +124,7 @@ export async function main(ns) {
                     } else if (meta.nextAction === "WEAKEN") {
                         // Only weaken if security > minSecurity on the target-server.
                         if (ns.getServerSecurityLevel(target) > ns.getServerMinSecurityLevel(target)) {
-                            weaken(ns, worker, target, meta);
+                          await weaken(ns, worker, target, meta);
                         }
                     } else if (meta.nextAction === "GROW") {
                         // Only grow the target while money < maxMoney.
@@ -154,16 +151,19 @@ export async function main(ns) {
         meta.nextAction = "WEAKEN";
     }
 
-    function weaken(ns, worker, target, meta) {
+    async function weaken(ns, worker, target, meta) {
         log(ns, `exec ${meta.nextAction} on ${target}`);
 
-        // let weakenThreads = 0;
+
+        //let weakenThreads = 0;
         let weakenThreads = meta.raisedSecurityLevel / 0.05;
         
-        // while (ns.weakenAnalyze(weakenThreads++, 1) <= meta.raisedSecurityLevel) {}
-        while (ns.weakenAnalyze(weakenThreads++, 1) <= meta.raisedSecurityLevel) { 
-            await ns.sleep(0); 
+        //while (ns.weakenAnalyze(weakenThreads++, 1) <= meta.raisedSecurityLevel) {}
+        while (ns.weakenAnalyze(weakenThreads++, 1) <= meta.raisedSecurityLevel) 
+        { 
+            //await ns.sleep(0); 
         }
+
 
         if (weakenThreads > 0) {
             log(ns, `weakening with ${weakenThreads} threads (${millisecondsToString(ns.getWeakenTime(target))})`);
@@ -185,7 +185,7 @@ export async function main(ns) {
         }
     }
 
-    function grow(ns, worker, target, meta) {
+     function grow(ns, worker, target, meta) {
         log(ns, `exec ${meta.nextAction} on ${target}`);
 
         const growThreads = calcNumberOfThreadsToGrowToMax(ns, target);
@@ -218,7 +218,7 @@ export async function main(ns) {
         }
     }
 
-    function hack(ns, worker, target, meta) {
+     function hack(ns, worker, target, meta) {
         log(ns, `exec ${meta.nextAction} on ${target}`);
 
         const partHackableMoney = ns.hackAnalyze(target);
