@@ -1,3 +1,7 @@
+import {
+    TextTransforms
+} from "./text-transform.js";
+
 /** @param {NS} ns */
 export async function main(ns) {
 
@@ -61,7 +65,7 @@ export async function main(ns) {
 
     const memberPrepped = [];
 
-    const membersToAscend = [];
+    const membersAscended = [];
     const memberStats = [];
 
     const delay = 100;
@@ -135,10 +139,10 @@ export async function main(ns) {
         const gangRespect = parseFloat(ns.gang.getGangInformation().respect).toFixed(2);
 
         ns.print(" \n");
-        ns.print(" 🌆 Gang: " + gangInfo.faction + " 💣");
-        ns.print(" 🏦 Money available: 💲" + FormatNumber(money));
-        ns.print(" 💵 Gang income/sec: 💲" + FormatNumber(gangIncome));
-        ns.print(" 🦾 Gang respect: " + gangRespect);
+        ns.print(" 🌆 Gang: " + TextTransforms.apply(gangInfo.faction, [TextTransforms.Color.ChartsBlue]) + " 💣");
+        ns.print(" 🏦 Money available: 💲" + TextTransforms.apply(FormatNumber(money), [TextTransforms.Color.LGreen]));
+        ns.print(" 💵 Gang income/sec: 💲" + TextTransforms.apply(FormatNumber(gangIncome), [TextTransforms.Color.LGreen]));
+        ns.print(" 🦾 Gang respect: " + TextTransforms.apply(gangRespect, [TextTransforms.Color.LPurple]));
 
         var members = ns.gang.getMemberNames();
         var prospects = MemberNames.filter(c => !members.includes(c));
@@ -146,7 +150,7 @@ export async function main(ns) {
         // FULL MEMBERS
         ns.print("\n" + " 😈 Current Members:" + "\n");
         var activeteam = members.join(", "); // Suggested by u/Aeraggo, 2-23-2023
-        ns.print(" " + activeteam + "\n");
+        ns.print("    " + TextTransforms.apply(activeteam, [TextTransforms.Color.ChartsBlue]) + "\n");
 
         // PROSPECTS
         ns.print("\n" + " 😐 Prospects:" + "\n");
@@ -156,7 +160,7 @@ export async function main(ns) {
         if (waitteam.length == 0) {
             ns.print("    Your gang is maxed out. Good job! Now go do some crime.\n");
         } else {
-            ns.print("    " + waitteam + "\n");
+            ns.print("    " + TextTransforms.apply(waitteam, [TextTransforms.Color.LPurple]) + "\n");
         }
 
         // RECRUIT
@@ -166,13 +170,33 @@ export async function main(ns) {
         } else {
         }
 
-        // ASCEND
-        for (var i = 0; i < prospects.length; ++i) {
 
-            if (await DoAscension(prospects[i])) {
-                await Ascend(prospects[i]);
+        let longest = 0;
+        let _members = members; // get every bought server.
+
+        for (let _member of _members) {
+            longest = Math.max(_member.length, longest)
+        };
+
+        ns.print("\n" + " ⬆️ Ascension stats: " + "\n");
+
+        // ASCEND
+        for (let _mem of _members) {
+
+            var foo1 = "";
+            var foo = " " + TextTransforms.apply(_mem.padStart(longest + 1), [TextTransforms.Color.ChartsBlue]) + " ";
+
+            var result = await numberOfTimesAscended(membersAscended, _mem);
+
+            if (await DoAscension(_mem)) {
+                await Ascend(_mem);
+                foo1 = _mem + " has just ascended."; // ascended!
+                membersAscended.push(_mem); // let this grow. 
             } else {
+                foo1 = " no. times ascended: " + result; // no ascension.
             }
+
+            ns.print(foo + " " + foo1 + " \n");
         }
 
         // CHECK IF ALREADY PREPPED
@@ -190,7 +214,7 @@ export async function main(ns) {
         const skillSort = members.sort((b, a) => ns.gang.getMemberInformation(a).hack - ns.gang.getMemberInformation(b).hack)
 
         // SHOW STATS
-        ns.print("\n" + " Members sorted by Hack Skill Level:");
+        ns.print("\n" + " ✨ Members sorted by Hack Skill Level:");
         for (var i = 0; i < skillSort.length; ++i) {
             var level = ns.gang.getMemberInformation(skillSort[i]).hack;
 
@@ -263,11 +287,11 @@ export async function main(ns) {
             var num0 = parseFloat(wantedlevel).toFixed(4);
             var num1 = parseFloat(respect).toFixed(2);
 
-            ns.print(name.padStart(longest0 + 1)
-                + ", 💻hack: " + hacklevel.padStart(longest1 + 1)
-                + ", 🕶️wanted: " + num0.padStart(9)
-                + ", 🦾respect: " + num1.padStart(9)
-                + ", 💵task: " + task.padStart(longest4 + 1)
+            ns.print(TextTransforms.apply(name.padStart(longest0 + 1), [TextTransforms.Color.ChartsBlue])
+                + ", 💻hack: " + TextTransforms.apply(hacklevel.padStart(longest1 + 1), [TextTransforms.Color.ChartsGreen])
+                + ", 🕶️wanted: " + TextTransforms.apply(num0.padStart(9), [TextTransforms.Color.ChartsGreen])
+                + ", 🦾respect: " + TextTransforms.apply(num1.padStart(9), [TextTransforms.Color.ChartsGreen])
+                + ", 💵task: " + TextTransforms.apply(task.padStart(longest4 + 1), [TextTransforms.Color.ChartsGreen])
                 + " \n");
         });
 
@@ -277,6 +301,18 @@ export async function main(ns) {
 
         ns.print(" \n");
         await ns.sleep(delay);
+    }
+
+
+    async function numberOfTimesAscended(membersAscended, name) {
+        var timesAscended = 0;
+        for (var i = 0; i < membersAscended.length; i++) {
+            if (membersAscended[i] == name)
+                timesAscended++;
+            await ns.sleep(10);
+        }
+
+        return timesAscended;
     }
 
     // Recruit a new prospect to a full gang member.
@@ -314,8 +350,7 @@ export async function main(ns) {
 
     // Ascend this current gang member
     async function Ascend(name) {
-        ns.gang.ascendMember(name); // Ascend the specified Gang Member.
-        ns.print(name + " Has ascended⏫.")
+        ns.gang.ascendMember(name); // Ascend the specified Gang Member.        
     }
 
     // Buy HackTools, HackAugs, CrimeAugs, Weapons, Armor, Vehicles
