@@ -61,7 +61,7 @@ export async function main(ns) {
 
     const memberPrepped = [];
 
-    //const membersToAscend = [];
+    const membersToAscend = [];
     const memberStats = [];
 
     const delay = 100;
@@ -74,6 +74,10 @@ export async function main(ns) {
     const Rootkits = ["NUKE Rootkit", "Soulstealer Rootkit", "Demon Rootkit", "Hmap Node", "Jack the Ripper"];
 
     const MemberNames = ["Genie", "Myconid", "Ogre", "Pixie", "Treant", "Troglodyte", "Loco", "Puppet", "Stretch", "Eternity", "Zen", "Cable"];
+    /*
+        , "Impulse", "Cent", "Canine", "Nova", "Night", "Artemis", "Game", "Bone", "Rebel", "Friction"
+        https://www.fantasynamegenerators.com/cyberpunk-names.php
+    */
 
     var topEarners = []; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
     var topRespect = []; // Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
@@ -141,19 +145,18 @@ export async function main(ns) {
 
         // FULL MEMBERS
         ns.print("\n" + " 😈 Current Members:" + "\n");
-        var team = members.join(", "); // Suggested by u/Aeraggo, 2-23-2023
-        ns.print(" " + team + "\n");
+        var activeteam = members.join(", "); // Suggested by u/Aeraggo, 2-23-2023
+        ns.print(" " + activeteam + "\n");
 
         // PROSPECTS
         ns.print("\n" + " 😐 Prospects:" + "\n");
-        team = ""; // reset
-        team = prospects.join(", "); // Suggested by u/Aeraggo, 2-23-2023
+        var waitteam = ""; // reset
+        waitteam = prospects.join(", "); // Suggested by u/Aeraggo, 2-23-2023
 
-        if (team.length == 0) {
+        if (waitteam.length == 0) {
             ns.print("    Your gang is maxed out. Good job! Now go do some crime.\n");
         } else {
-            ns.print("    " + team + "\n");
-            ns.print("\n" + "🔼 Increased 'Respect' level required to recruit new 'Prospects'." + "\n"); // 🆙⬆️
+            ns.print("    " + waitteam + "\n");
         }
 
         // RECRUIT
@@ -164,27 +167,13 @@ export async function main(ns) {
         }
 
         // ASCEND
-        for (var i = 0; i < members.length; ++i) {
-            if (await DoAscension(members[i])) {
-                ns.print(" Ascending member: " + members[i] + "\n")
-                await Ascend(members[i]);
+        for (var i = 0; i < prospects.length; ++i) {
+
+            if (await DoAscension(prospects[i])) {
+                await Ascend(prospects[i]);
             } else {
-                // PUT IN ASCENDING WAIT-LIST
-                // if (membersToAscend.includes(members[i])) {
-                //     continue; // ignore
-                // } else {
-                //     membersToAscend.push(members[i]); // add them
-                // }
             }
         }
-
-        // Get our list of people to ascend.  
-        // var ascendList = "";        
-        // membersToAscend.forEach((e) => {
-        //     ascendList += e + ", ";
-        // });
-        // ascendList = ascendList.substring(0, ascendList.length - 2); // remove last comma.
-        // ns.print("🛑 Not optimal to ascend current member wait-list: "+ ascendList +" \n");
 
         // CHECK IF ALREADY PREPPED
         for (var i = 0; i < members.length; ++i) {
@@ -301,21 +290,25 @@ export async function main(ns) {
 
     // Determine if we should ascend this gang member
     async function DoAscension(name) {
-        let memberInfo = ns.gang.getMemberInformation(name);
-        var ascResult = ns.gang.getAscensionResult(memberInfo.name); // Get the result of an ascension without ascending.
-        var strengthMultiplier = ascResult.str; // Strength multiplier gained from ascending
-        var currentMultiplier = memberInfo.str_asc_mult; // CURRENT multiplier
+        try {
+            let memberInfo = ns.gang.getMemberInformation(name);
+            var ascResult = ns.gang.getAscensionResult(memberInfo.name); // Get the result of an ascension without ascending.
+            var strengthMultiplier = ascResult.str; // Strength multiplier gained from ascending
+            var currentMultiplier = memberInfo.str_asc_mult; // CURRENT multiplier
 
-        // Only ascend if the multiplier is less than 10 and will increase by at least 2
-        if (memberInfo.str_asc_mult < 10 && ascResult != undefined) {
-            let multchange = (currentMultiplier * strengthMultiplier) - currentMultiplier;
-            if (multchange >= 2) {
-                // Ascend
-                return (ascResult.hack >= 2); // Hacking multiplier gained from ascending
+            // Only ascend if the multiplier is less than 10 and will increase by at least 2
+            if (memberInfo.str_asc_mult < 10 && ascResult != undefined) {
+                let multchange = (currentMultiplier * strengthMultiplier) - currentMultiplier;
+                if (multchange >= 2) {
+                    // Ascend
+                    return (ascResult.hack >= 2); // Hacking multiplier gained from ascending
+                }
+            } else if (ascResult == undefined) {
+
+                return false;
             }
-        } else if (ascResult == undefined) {
-
-            return false;
+        } catch (Err) {
+            ns.print(Err);
         }
     }
 
@@ -502,8 +495,8 @@ export async function main(ns) {
                     memberStats.push(member + "|" + task);
                     return; // GET OUT.
                 }
-                // NOT POWERFUL ENOUGH FOR WARFARE.
-                // DO SOEMTHING ELSE.
+                // NOT POWERFUL ENOUGH FOR WARFARE
+                // DO SEOMTHING ELSE
             } else if (overrideTask == "Territory Warfare" && earnedRespect < 100000 || overrideTask != "Territory Warfare") {
                 // TRAIN
                 if (hackSkillLevel < statsTargetHacking && earnedRespect < statsTargetRespect) {
