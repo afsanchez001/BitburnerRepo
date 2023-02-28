@@ -5,9 +5,9 @@ export async function main(ns) {
         
         UPDATE 2/25/2023: 
 
-        after the v2.2.2 release on 2/21/2023, the findPlayer() method used in the original script for 'globalThis.webpackJsonp.push()' and payload_id, stopped working.
+        After the v2.2.2 release was released on 2/21/2023, the findPlayer() method used in the original script for 'globalThis.webpackJsonp.push()' and payload_id, stopped working.
         
-        I refactored the script to use ns.getPlayer() and ns.gang.getGangInformation() as well as other methods to build out the previous data, and some new data for the HUD. 
+        I refactored the script to use ns.getPlayer() and ns.gang.getGangInformation() as well as other methods to build out the previous and some new data fot the HUD. 
         
         The HUD now also shows the following:    
             • City
@@ -20,9 +20,11 @@ export async function main(ns) {
             • Karma
             • Kills
 
-        This has been tested on v2.2.2 (d3f9554a), and it is working/stable. 
+        This hs been tested on v2.2.2 (d3f9554a), and it is working/stable.    
+        - u/DukeNukemDad    
     */
-    
+
+    ns.disableLog("ALL");
     // ns.clearLog();
     // ns.tail();
 
@@ -49,10 +51,26 @@ export async function main(ns) {
 
             let player = ns.getPlayer();
 
-            const gangInfo = ns.gang.getGangInformation();
-            const gangFaction = gangInfo.faction;
-            const gangIncome = ns.formatNumber(ns.gang.getGangInformation().moneyGainRate * 5, 2);  // A tick is every 200ms. To get the actual money/sec, multiple moneyGainRate by 5.
-            const gangRespect = ns.formatNumber(ns.gang.getGangInformation().respect, 5);
+            const gangInfo = null;
+            const gangFaction = "";
+            const gangIncome = 0;
+            const gangRespect = 0;
+
+            let gangAPI = false;
+            try {
+                if (ns.gang.getGangInformation() != null) {
+                    gangAPI = true;
+                }
+            } catch {
+                ns.print("gangAPI: " + false);
+            }
+
+            if (gangAPI != false) {
+                gangInfo = ns.gang.getGangInformation();
+                gangFaction = gangInfo.faction;
+                gangIncome = ns.formatNumber(ns.gang.getGangInformation().moneyGainRate * 5, 2);  // A tick is every 200ms. To get the actual money/sec, multiple moneyGainRate by 5.
+                gangRespect = ns.formatNumber(ns.gang.getGangInformation().respect, 5);
+            }
 
             const playerCity = player.city; // city
             const playerLocation = player.location; // location
@@ -84,13 +102,13 @@ export async function main(ns) {
             hook1.insertAdjacentHTML('beforebegin', `<hr class="HUD_sep HUD_el">`);
 
             // playerCity
-            hook0.insertAdjacentHTML('beforeend', `<element class="HUD_GN_C HUD_el" title="The name of your gang faction.">City </element><br class="HUD_el">`)
+            hook0.insertAdjacentHTML('beforeend', `<element class="HUD_GN_C HUD_el" title="The name of the City you are currently in.">City </element><br class="HUD_el">`)
             colorByClassName(".HUD_GN_C", theme['cha'])
             hook1.insertAdjacentHTML('beforeend', `<element class="HUD_GN_C HUD_el">${playerCity + '<br class="HUD_el">'}</element>`)
             colorByClassName(".HUD_GN_C", theme['cha'])
 
             // playerLocation
-            hook0.insertAdjacentHTML('beforeend', `<element class="HUD_GN_L HUD_el" title="The name of your gang faction.">Location </element><br class="HUD_el">`)
+            hook0.insertAdjacentHTML('beforeend', `<element class="HUD_GN_L HUD_el" title="Your current location inside the city.">Location </element><br class="HUD_el">`)
             colorByClassName(".HUD_GN_L", theme['cha'])
             hook1.insertAdjacentHTML('beforeend', `<element class="HUD_GN_L HUD_el">${playerLocation + '<br class="HUD_el">'}</element>`)
             colorByClassName(".HUD_GN_L", theme['cha'])
