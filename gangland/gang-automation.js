@@ -186,14 +186,15 @@ export async function main(ns) {
             var foo1 = "";
             var foo = " " + TextTransforms.apply(_mem.padStart(longest + 1), [TextTransforms.Color.ChartsBlue]) + " ";
 
-            var result = await numberOfTimesAscended(membersAscended, _mem);
+            var result = await NumberOfTimesAscended(membersAscended, _mem);
 
             if (await DoAscension(_mem)) {
                 await Ascend(_mem);
                 foo1 = _mem + " has just ascended."; // ascended!
                 membersAscended.push(_mem); // let this grow. 
+                foo1 = " no. times ascended: " + result; 
             } else {
-                foo1 = " no. times ascended: " + result; // no ascension.
+                foo1 = " no. times ascended: " + result; 
             }
 
             ns.print(foo + " " + foo1 + " \n");
@@ -304,12 +305,12 @@ export async function main(ns) {
     }
 
 
-    async function numberOfTimesAscended(membersAscended, name) {
+    async function NumberOfTimesAscended(membersAscended, name) {
         var timesAscended = 0;
         for (var i = 0; i < membersAscended.length; i++) {
             if (membersAscended[i] == name)
                 timesAscended++;
-            await ns.sleep(10);
+            await ns.sleep(1);
         }
 
         return timesAscended;
