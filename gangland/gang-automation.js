@@ -38,6 +38,8 @@ export async function main(ns) {
         overrideTask = "Ethical Hacking";
     } else if (override == "train") {
         overrideTask = "Train Hacking";
+    } else if (override == "warfare") {
+        overrideTask = "Territory Warfare";
     }
 
     ns.disableLog("ALL");
@@ -490,10 +492,44 @@ export async function main(ns) {
         if (overrideTask != "") {
             // OVERRIDE TASK
             task = overrideTask;
-            // ASSIGN TASK
-            if (ns.gang.setMemberTask(member, task)) {
-                memberStats.push(member + "|" + task);
-                return; // GET OUT.
+
+            // ns.print("task: " + task);
+
+            // Territory Warfare!
+            if (overrideTask == "Territory Warfare" && earnedRespect > 10000) {
+                // ASSIGN TASK
+                if (ns.gang.setMemberTask(member, task)) {
+                    memberStats.push(member + "|" + task);
+                    return; // GET OUT.
+                }
+                // NOT POWERFUL ENOUGH FOR WARFARE.
+                // DO SOEMTHING ELSE.
+            } else if (overrideTask == "Territory Warfare" && earnedRespect < 100000 || overrideTask != "Territory Warfare") {
+                // TRAIN
+                if (hackSkillLevel < statsTargetHacking && earnedRespect < statsTargetRespect) {
+                    if (gangInfo.isHacking) {
+                        task = training[1]; // Train Combat 0, Train Hacking 1, Train Charisma 2
+                    }
+                    if (!gangInfo.isHacking) {
+                        task = training[0]; // Train Combat 0, Train Hacking 1, Train Charisma 2
+                    }
+                    if (ns.gang.setMemberTask(member, task)) {
+                        memberStats.push(member + "|" + task);
+                        return; // GET OUT.
+                    }
+                } else if (wantedLevel >= 100) {
+                    task = topVirtuous[getRandomInt(topVirtuous.length)]; // Ethical Hacking, Vigilante Justice  
+                } else if (earnedRespect < 1000) {
+                    task = topRespect[getRandomInt(topRespect.length)]; // Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
+                } else if (earnedRespect > 1000) {
+                    task = topEarners[getRandomInt(topEarners.length)]; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
+                }
+                // ASSIGN TASK
+                if (ns.gang.setMemberTask(member, task)) {
+                    memberStats.push(member + "|" + task);
+                } else {
+                    ns.print("   unable to assign " + member + " with " + task + "\n");
+                }
             }
         }
 
@@ -524,11 +560,8 @@ export async function main(ns) {
         } else if (earnedRespect > 1000) {
             // EARN MONEY				
             task = topEarners[getRandomInt(topEarners.length)]; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
-        } 
-        // LATER WHEN WE MAKE A COMBAT GANG ... Territory Warfare, figure this out.
-        // else if (!gangInfo.isHacking) {
-        //   ns.gang.setMemberTask(member, warfare[0]);
-        // }
+        }
+
 
         // ASSIGN TASK
         if (ns.gang.setMemberTask(member, task)) {
