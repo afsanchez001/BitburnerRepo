@@ -172,7 +172,7 @@ export async function main(ns) {
 
 
         let longest = 0;
-        let _members = members; // get every bought server.
+        let _members = members;
 
         for (let _member of _members) {
             longest = Math.max(_member.length, longest)
