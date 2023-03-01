@@ -51,10 +51,10 @@ export async function main(ns) {
 
             let player = ns.getPlayer();
 
-            const gangInfo = null;
-            const gangFaction = "";
-            const gangIncome = 0;
-            const gangRespect = 0;
+            var gangInfo = null;
+            var gangFaction = "";
+            var gangIncome = 0;
+            var gangRespect = 0;
 
             let gangAPI = false;
             try {
@@ -72,25 +72,25 @@ export async function main(ns) {
                 gangRespect = ns.formatNumber(ns.gang.getGangInformation().respect, 5);
             }
 
-            const playerCity = player.city; // city
-            const playerLocation = player.location; // location
-            const playerKills = player.numPeopleKilled; // numPeopleKilled
-            const playerKarma = ns.heart.break();
+            var playerCity = player.city; // city
+            var playerLocation = player.location; // location
+            var playerKills = player.numPeopleKilled; // numPeopleKilled
+            var playerKarma = ns.heart.break();
 
             let purchased_servers = ns.getPurchasedServers(); // get every bought server if exists, else just create our blank array and add home to it.
             purchased_servers.push("home"); // add home to the array.
             let cumulative = 0;
             for (let pserv of purchased_servers) {
                 let gains = 0;
-                for (const script of ns.ps(pserv)) {
-                    const s = ns.getRunningScript(script.pid)
+                for (var script of ns.ps(pserv)) {
+                    var s = ns.getRunningScript(script.pid)
                     if (s.onlineRunningTime > 0) gains += s.onlineMoneyMade / s.onlineRunningTime
                 }
                 cumulative += gains;
             }
 
-            const scriptIncome = ns.formatNumber(cumulative, 2); // $/sec
-            const scriptXP = ns.formatNumber(ns.getTotalScriptExpGain(), 2); // xp/sec
+            var scriptIncome = ns.formatNumber(cumulative, 2); // $/sec
+            var scriptXP = ns.formatNumber(ns.getTotalScriptExpGain(), 2); // xp/sec
 
             // End paramaters, begin CSS: 
 
