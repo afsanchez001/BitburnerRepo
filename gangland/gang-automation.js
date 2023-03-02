@@ -139,7 +139,7 @@ export async function main(ns) {
         const gangRespect = parseFloat(ns.gang.getGangInformation().respect).toFixed(2);
 
         ns.print(" \n");
-        ns.print(" 🌆 Gang: " + TextTransforms.apply(gangInfo.faction, [TextTransforms.Color.ChartsBlue]) + " 💣");
+        ns.print(" 🌆 Gang: " + TextTransforms.apply(gangInfo.faction, [TextTransforms.Color.Orange]) + " 💣");
         ns.print(" 🏦 Money available: 💲" + TextTransforms.apply(FormatNumber(money), [TextTransforms.Color.LGreen]));
         ns.print(" 💵 Gang income/sec: 💲" + TextTransforms.apply(FormatNumber(gangIncome), [TextTransforms.Color.LGreen]));
         ns.print(" 🦾 Gang respect: " + TextTransforms.apply(gangRespect, [TextTransforms.Color.LPurple]));
@@ -192,9 +192,9 @@ export async function main(ns) {
                 await Ascend(_mem);
                 foo1 = _mem + " has just ascended."; // ascended!
                 membersAscended.push(_mem); // let this grow. 
-                foo1 = " no. times ascended: " + result; 
+                foo1 = " no. times ascended: " + result;
             } else {
-                foo1 = " no. times ascended: " + result; 
+                foo1 = " no. times ascended: " + result;
             }
 
             ns.print(foo + " " + foo1 + " \n");
@@ -509,9 +509,9 @@ export async function main(ns) {
 
         // HACKING
         var task = "";
-        var statsTarget = 50; // strength, agility, charisma, defense
-        var statsTargetHacking = 500; // hacking
-        var statsTargetRespect = 1000; // respect
+        // var statsTarget = 50; // strength, agility, charisma, defense
+        // var statsTargetHacking = 500; // hacking
+        // var statsTargetRespect = 10000; // respect
 
         {
             // not using ... && memberInfo.strength < statsTarget && memberInfo.agility < statsTarget && memberInfo.charisma < statsTarget && memberInfo.defense < statsTarget
@@ -519,10 +519,9 @@ export async function main(ns) {
         }
 
         if (overrideTask != "") {
-            // OVERRIDE TASK
-            task = overrideTask;
 
-            // ns.print("task: " + task);
+            // GRAB OVERRIDE TASK
+            task = overrideTask;
 
             // Territory Warfare!
             if (overrideTask == "Territory Warfare" && earnedRespect > 10000) {
@@ -530,30 +529,79 @@ export async function main(ns) {
                 if (ns.gang.setMemberTask(member, task)) {
                     memberStats.push(member + "|" + task);
                     return; // GET OUT.
+                } else {
+                    ns.print("   unable to assign " + member + " with " + task + "\n");
                 }
-                // NOT POWERFUL ENOUGH FOR WARFARE
-                // DO SEOMTHING ELSE
-            } else if (overrideTask == "Territory Warfare" && earnedRespect < 100000 || overrideTask != "Territory Warfare") {
+            } else if (overrideTask == "Territory Warfare" && earnedRespect < 10000) {
+                // NOT POWERFUL ENOUGH FOR WARFARE. SO, DO SEOMTHING ELSE...
+
                 // TRAIN
-                if (hackSkillLevel < statsTargetHacking && earnedRespect < statsTargetRespect) {
+                if (hackSkillLevel < 500 && earnedRespect < 10000) {
                     if (gangInfo.isHacking) {
-                        task = training[1]; // Train Combat 0, Train Hacking 1, Train Charisma 2
+                        task = training[1]; // Train Hacking
                     }
                     if (!gangInfo.isHacking) {
-                        task = training[0]; // Train Combat 0, Train Hacking 1, Train Charisma 2
+                        task = training[0]; // Train Combat
                     }
+                    // ASSIGN TRAINING TASK
                     if (ns.gang.setMemberTask(member, task)) {
                         memberStats.push(member + "|" + task);
                         return; // GET OUT.
+                    } else {
+                        ns.print("   unable to assign " + member + " with " + task + "\n");
                     }
-                } else if (wantedLevel >= 100) {
+                }
+
+                if (wantedLevel >= 100 && hackSkillLevel <= 500 && earnedRespect <= 10000) {
                     task = topVirtuous[getRandomInt(topVirtuous.length)]; // Ethical Hacking, Vigilante Justice  
-                } else if (earnedRespect < 1000) {
+                }
+                if (hackSkillLevel <= 500 && earnedRespect >= 10000) {
                     task = topRespect[getRandomInt(topRespect.length)]; // Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
-                } else if (earnedRespect > 1000) {
+                }
+                if (hackSkillLevel >= 500 && earnedRespect <= 10000) {
                     task = topEarners[getRandomInt(topEarners.length)]; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
                 }
-                // ASSIGN TASK
+
+                // ASSIGN NON-TRAINING TASK
+                if (ns.gang.setMemberTask(member, task)) {
+                    memberStats.push(member + "|" + task);
+                } else {
+                    ns.print("   unable to assign " + member + " with " + task + "\n");
+                }
+
+            } else if (overrideTask != "Territory Warfare") {
+
+                // THIS IS NON-NEGOTIABLE. IF HACK LEVEL IS < 500, WE REQUIRE STRICT TRAINING. 
+                // IGNORE ALL OTHER JOBS/TASKS.
+
+                // TRAIN
+                if (hackSkillLevel < 500 && earnedRespect < 10000) {
+                    if (gangInfo.isHacking) {
+                        task = training[1]; // Train Hacking
+                    }
+                    if (!gangInfo.isHacking) {
+                        task = training[0]; // Train Combat
+                    }
+                    // ASSIGN TRAINING TASK
+                    if (ns.gang.setMemberTask(member, task)) {
+                        memberStats.push(member + "|" + task);
+                        return; // GET OUT.
+                    } else {
+                        ns.print("   unable to assign " + member + " with " + task + "\n");
+                    }
+                }
+
+                if (wantedLevel >= 100 && hackSkillLevel <= 500 && earnedRespect <= 10000) {
+                    task = topVirtuous[getRandomInt(topVirtuous.length)]; // Ethical Hacking, Vigilante Justice  
+                }
+                if (hackSkillLevel <= 500 && earnedRespect >= 10000) {
+                    task = topRespect[getRandomInt(topRespect.length)]; // Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
+                }
+                if (hackSkillLevel >= 500 && earnedRespect <= 10000) {
+                    task = topEarners[getRandomInt(topEarners.length)]; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
+                }
+
+                // ASSIGN NON-TRAINING TASK
                 if (ns.gang.setMemberTask(member, task)) {
                     memberStats.push(member + "|" + task);
                 } else {
@@ -564,35 +612,35 @@ export async function main(ns) {
 
         // THIS IS NON-NEGOTIABLE. IF HACK LEVEL IS < 500, WE REQUIRE STRICT TRAINING. 
         // IGNORE ALL OTHER JOBS/TASKS.
-        if (hackSkillLevel < statsTargetHacking && earnedRespect < statsTargetRespect) {
-            // Are we a Hacking gang? 
-            // TRAIN HACKING
+
+        // TRAIN
+        if (hackSkillLevel < 500 && earnedRespect < 10000) {
             if (gangInfo.isHacking) {
-                task = training[1]; // Train Combat 0, Train Hacking 1, Train Charisma 2
+                task = training[1]; // Train Hacking
             }
-            // Are we a Combat gang? 
-            // TRAIN COMBAT
             if (!gangInfo.isHacking) {
-                task = training[0]; // Train Combat 0, Train Hacking 1, Train Charisma 2
+                task = training[0]; // Train Combat
             }
-            // ASSIGN TRAINING task
+            // ASSIGN TRAINING TASK
             if (ns.gang.setMemberTask(member, task)) {
                 memberStats.push(member + "|" + task);
                 return; // GET OUT.
+            } else {
+                ns.print("   unable to assign " + member + " with " + task + "\n");
             }
-        } else if (wantedLevel >= 100) {
-            // DECREASE WANTED LEVEL
+        }
+
+        if (wantedLevel >= 100 && hackSkillLevel <= 500 && earnedRespect <= 10000) {
             task = topVirtuous[getRandomInt(topVirtuous.length)]; // Ethical Hacking, Vigilante Justice  
-        } else if (earnedRespect < 1000) {
-            // BUILD RESPECT
+        }
+        if (hackSkillLevel <= 500 && earnedRespect >= 10000) {
             task = topRespect[getRandomInt(topRespect.length)]; // Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
-        } else if (earnedRespect > 1000) {
-            // EARN MONEY				
+        }
+        if (hackSkillLevel >= 500 && earnedRespect <= 10000) {
             task = topEarners[getRandomInt(topEarners.length)]; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
         }
 
-
-        // ASSIGN TASK
+        // ASSIGN NON-TRAINING TASK
         if (ns.gang.setMemberTask(member, task)) {
             memberStats.push(member + "|" + task);
         } else {
