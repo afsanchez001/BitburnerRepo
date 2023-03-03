@@ -514,10 +514,7 @@ export async function main(ns) {
         // var statsTargetRespect = 10000; // respect
 
         if (overrideTask != "") {
-
-            // GRAB OVERRIDE TASK
-            task = overrideTask;
-
+            task = overrideTask; // GRAB OVERRIDE TASK
             // Territory Warfare!
             if (overrideTask == "Territory Warfare" && earnedRespect > 10000) {
                 // ASSIGN TASK
@@ -528,45 +525,8 @@ export async function main(ns) {
                     ns.print("   unable to assign " + member + " with " + task + "\n");
                 }
 
-                // NOT POWERFUL ENOUGH FOR WARFARE. SO, IGNORE 'Territory Warfare', DO SEOMTHING ELSE...
-            } else if (overrideTask == "Territory Warfare" && earnedRespect < 10000) {
-
-                // TRAIN
-                if (hackSkillLevel < 500 && earnedRespect < 10000) {
-                    // Are we a Hacking gang? 
-                    // TRAIN HACKING
-                    if (gangInfo.isHacking) {
-                        task = training[1]; // Train Combat 0, Train Hacking 1, Train Charisma 2
-                    }
-                    // Are we a Combat gang? 
-                    // TRAIN COMBAT
-                    if (!gangInfo.isHacking) {
-                        task = training[0]; // Train Combat 0, Train Hacking 1, Train Charisma 2
-                    }
-                    // ASSIGN TRAINING task
-                    if (ns.gang.setMemberTask(member, task)) {
-                        memberStats.push(member + "|" + task);
-                        return; // GET OUT.
-                    }
-                } else if (wantedLevel >= 100) {
-                    // DECREASE WANTED LEVEL
-                    task = topVirtuous[getRandomInt(topVirtuous.length)]; // Ethical Hacking, Vigilante Justice  
-                } else if (earnedRespect < 1000) {
-                    // BUILD RESPECT
-                    task = topRespect[getRandomInt(topRespect.length)]; // Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
-                } else if (earnedRespect > 1000) {
-                    // EARN MONEY				
-                    task = topEarners[getRandomInt(topEarners.length)]; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
-                }
-
-                // ASSIGN NON-TRAINING TASK
-                if (ns.gang.setMemberTask(member, task)) {
-                    memberStats.push(member + "|" + task);
-                } else {
-                    ns.print("   unable to assign " + member + " with " + task + "\n");
-                }
-
-            } else if (overrideTask != "Territory Warfare") {
+                // NOT POWERFUL ENOUGH FOR WARFARE. SO, IGNORE 'Territory Warfare', DO SEOMTHING ELSE...             
+            } else if (overrideTask == "Territory Warfare" && earnedRespect < 10000 || overrideTask != "Territory Warfare") {
 
                 // THIS IS NON-NEGOTIABLE. IF HACK LEVEL IS < 500, WE REQUIRE STRICT TRAINING. 
                 // IGNORE ALL OTHER JOBS/TASKS.
