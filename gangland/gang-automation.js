@@ -328,22 +328,36 @@ export async function main(ns) {
     // Determine if we should ascend this gang member
     async function DoAscension(name) {
         try {
-            let memberInfo = ns.gang.getMemberInformation(name);
-            var ascResult = ns.gang.getAscensionResult(memberInfo.name); // Get the result of an ascension without ascending.
-            var strengthMultiplier = ascResult.str; // Strength multiplier gained from ascending
-            var currentMultiplier = memberInfo.str_asc_mult; // CURRENT multiplier
+
+            var memberInfo = ns.gang.getMemberInformation(name); // Get entire gang meber onject from name.
+            var ascResult = ns.gang.getAscensionResult(memberInfo.name);  // Get the result of an ascension without ascending.
+
+            // This is a HACKING GANG. Use [hack] Hacking, not [str] Strength.
+            var hackingMultiplier = ascResult.hack; // Hacking multiplier gained from ascending
+
+            // This is a HACKING GANG. Use [hack_asc_mult] Hacking, not [str_asc_mult] Strength.
+            var currentMultiplier = memberInfo.hack_asc_mult; // Hacking multiplier from ascensions
+
+            ns.print("Hacking multiplier gained from ascending: " + ascResult.hack);
+            ns.print("currentMultiplier: " + currentMultiplier);
 
             // Only ascend if the multiplier is less than 10 and will increase by at least 2
-            if (memberInfo.str_asc_mult < 10 && ascResult != undefined) {
-                let multchange = (currentMultiplier * strengthMultiplier) - currentMultiplier;
+            if (currentMultiplier < 50 && ascResult != undefined) {
+
+                let multchange = (currentMultiplier * hackingMultiplier) - currentMultiplier;
+
+                ns.print("Multiplier change: " + multchange);
+
                 if (multchange >= 2) {
                     // Ascend
                     return (ascResult.hack >= 2); // Hacking multiplier gained from ascending
                 }
+
             } else if (ascResult == undefined) {
 
                 return false;
             }
+
         } catch (Err) {
             ns.print(Err);
         }
@@ -517,6 +531,7 @@ export async function main(ns) {
             task = overrideTask; // GRAB OVERRIDE TASK
             // Territory Warfare!
             if (overrideTask == "Territory Warfare" && earnedRespect > 10000) {
+
                 // ASSIGN TASK
                 if (ns.gang.setMemberTask(member, task)) {
                     memberStats.push(member + "|" + task);
@@ -525,9 +540,9 @@ export async function main(ns) {
 
                 // NOT POWERFUL ENOUGH FOR WARFARE. SO, IGNORE 'Territory Warfare', DO SEOMTHING ELSE...             
             } else if (overrideTask == "Territory Warfare" && earnedRespect < 10000) {
+
                 // THIS IS NON-NEGOTIABLE. IF HACK LEVEL IS < 500, WE REQUIRE STRICT TRAINING. 
                 // IGNORE ALL OTHER JOBS/TASKS.
-
                 // TRAIN
                 if (hackSkillLevel < 400 && earnedRespect < 500) {
                     // Are we a Hacking gang? 
@@ -561,11 +576,21 @@ export async function main(ns) {
                 if (ns.gang.setMemberTask(member, task)) {
                     memberStats.push(member + "|" + task);
                     return; // GET OUT.
-                } else {
-                    ns.print("   unable to assign " + member + " with " + task + "\n");
                 }
 
             } else if (overrideTask != "Territory Warfare") {
+
+                // TYPE
+                if (override == "respect") {
+                    task = topRespect[getRandomInt(topRespect.length)]; // Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
+                } else if (override == "earn") {
+                    task = topEarners[getRandomInt(topEarners.length)]; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
+                } else if (override == "decrease") {
+                    task = topVirtuous[getRandomInt(topVirtuous.length)]; // Ethical Hacking, Vigilante Justice  
+                } else if (override == "train") {
+                    task = task = training[1]; // Train Combat 0, Train Hacking 1, Train Charisma 2
+                }
+
                 // ASSIGN TASK
                 if (ns.gang.setMemberTask(member, task)) {
                     memberStats.push(member + "|" + task);
