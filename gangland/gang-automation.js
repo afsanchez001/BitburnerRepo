@@ -338,26 +338,22 @@ export async function main(ns) {
             // This is a HACKING GANG. Use [hack_asc_mult] Hacking, not [str_asc_mult] Strength.
             var currentMultiplier = memberInfo.hack_asc_mult; // Hacking multiplier from ascensions
 
-            ns.print("Hacking multiplier gained from ascending: " + ascResult.hack);
-            ns.print("currentMultiplier: " + currentMultiplier);
+            // ns.print("Hacking multiplier gained from ascending: " + ascResult.hack);
+            // ns.print("currentMultiplier: " + currentMultiplier);
 
-            // Only ascend if the multiplier is less than 10 and will increase by at least 2
+            // Only ascend if the multiplier is less than 50 and will increase by at least 2
             if (currentMultiplier < 50 && ascResult != undefined) {
 
                 let multchange = (currentMultiplier * hackingMultiplier) - currentMultiplier;
-
-                ns.print("Multiplier change: " + multchange);
+                //ns.print("Multiplier change: " + multchange);
 
                 if (multchange >= 2) {
                     // Ascend
                     return (ascResult.hack >= 2); // Hacking multiplier gained from ascending
                 }
-
             } else if (ascResult == undefined) {
-
                 return false;
             }
-
         } catch (Err) {
             ns.print(Err);
         }
