@@ -64,7 +64,6 @@ export async function main(ns) {
     const memberRootkits = [];
 
     const memberPrepped = [];
-
     const membersAscended = [];
     const memberStats = [];
 
@@ -171,45 +170,7 @@ export async function main(ns) {
         }
 
 
-        let longest = 0;
-        let _members = members;
 
-        for (let _member of _members) {
-            longest = Math.max(_member.length, longest)
-        };
-
-        ns.print("\n" + " ⬆️ Ascension stats: " + "\n");
-
-        // ASCEND
-        for (let _mem of _members) {
-
-            var foo1 = "";
-            var foo = " " + TextTransforms.apply(_mem.padStart(longest + 1), [TextTransforms.Color.ChartsBlue]) + " ";
-
-            var result = await NumberOfTimesAscended(membersAscended, _mem);
-
-            if (await DoAscension(_mem)) {
-                await Ascend(_mem);
-                foo1 = _mem + " has just ascended."; // ascended!
-                membersAscended.push(_mem); // let this grow. 
-                foo1 = " no. times ascended: " + result;
-            } else {
-                foo1 = " no. times ascended: " + result;
-            }
-
-            ns.print(foo + " " + foo1 + " \n");
-        }
-
-        // CHECK IF ALREADY PREPPED
-        for (var i = 0; i < members.length; ++i) {
-            if (memberPrepped.includes(members[i])) {
-                continue;
-            } else {
-                // PREP MEMBER        
-                ns.print(" Prepping member: " + members[i] + "\n")
-                Prepare(members[i]);
-            }
-        }
 
         // GET ALL HACK SKILL LEVELS. Sort members from highest to lowest Hack().
         const skillSort = members.sort((b, a) => ns.gang.getMemberInformation(a).hack - ns.gang.getMemberInformation(b).hack)
@@ -296,6 +257,72 @@ export async function main(ns) {
                 + " \n");
         });
 
+        // ASCEND & PREP
+        let longest = 0;
+        let _members = members;
+
+        for (let _member of _members) {
+            longest = Math.max(_member.length, longest)
+        };
+
+        ns.print("\n" + " ⬆ Ascension✨ & Prep🔪💣🛡️ stats: " + "\n");
+
+        var lbracket = TextTransforms.apply("[", [TextTransforms.Color.ChartsGray])
+        var rbracket = TextTransforms.apply("]", [TextTransforms.Color.ChartsGray])
+
+        for (let _mem of _members) {
+
+            var prepping = "";
+            var output = "";
+            var member_name = "" + TextTransforms.apply(_mem.padStart(longest + 1), [TextTransforms.Color.ChartsBlue]) + "";
+            var numTimesAscended = await NumberOfTimesAscended(membersAscended, _mem);
+
+            // PREP
+            if (memberPrepped.includes(_mem.trim())) {
+                // ALREADY PREPPED OUT
+                prepping = " " + lbracket + TextTransforms.apply("Fully Prepped 🔪💣🛡️", [TextTransforms.Color.ChartsGreen]) + rbracket + "";
+            } else {
+                // PREP MEMBER        
+                prepping = " " + lbracket + TextTransforms.apply("Prepping...", [TextTransforms.Color.ChartsGray]) + rbracket + "";
+                Prepare(_mem);
+            }
+
+            // ASCEND
+            var multchange = 0;
+            try {
+                var memberInfo = ns.gang.getMemberInformation(_mem); // Get entire gang meber onject from name.
+                var ascResult = ns.gang.getAscensionResult(_mem);  // Get the result of an ascension without ascending.
+
+                if (ascResult != undefined) {
+
+                    var hackingMultiplier = ascResult.hack; // Hacking multiplier gained from ascending // This is a HACKING GANG. Use [hack] Hacking, not [str] Strength.
+                    var currentMultiplier = memberInfo.hack_asc_mult; // Hacking multiplier from ascensions // This is a HACKING GANG. Use [hack_asc_mult] Hacking, not [str_asc_mult] Strength.
+
+                    // ns.print(" \n");
+                    // ns.print("Ascend checking: " + _mem);
+                    // ns.print("Hacking multiplier gained from ascending: " + ascResult.hack);
+                    // ns.print("currentMultiplier: " + currentMultiplier);
+
+                    var multchange = (currentMultiplier * hackingMultiplier) - currentMultiplier;
+
+                    if (Math.floor(multchange) < 2) {
+                        output = " no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("Waiting...", [TextTransforms.Color.ChartsGray]) + rbracket + " " + multchange;
+                    } else {
+                        if (await Ascend(_mem)) {
+                            membersAscended.push(_mem); // let this grow.
+                            output = " no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("✨Ascending✨", [TextTransforms.Color.ChartsGreen]) + rbracket + "";
+                        }
+                    }
+                }
+
+            } catch {
+                // ignore.                        
+            }
+
+            ns.print(member_name + ", " + output + " " + prepping + " \n");
+
+        }
+
         // RESET ENVIRONMNENT
         memberDataObj = {};
         memberStats.length = 0;
@@ -305,14 +332,13 @@ export async function main(ns) {
     }
 
 
-    async function NumberOfTimesAscended(membersAscended, name) {
+    function NumberOfTimesAscended(membersAscended, name) {
         var timesAscended = 0;
         for (var i = 0; i < membersAscended.length; i++) {
-            if (membersAscended[i] == name)
+            if (membersAscended[i] == name) {
                 timesAscended++;
-            await ns.sleep(1);
+            }
         }
-
         return timesAscended;
     }
 
@@ -325,43 +351,9 @@ export async function main(ns) {
         await ns.sleep(10);
     }
 
-    // Determine if we should ascend this gang member
-    async function DoAscension(name) {
-        try {
-
-            var memberInfo = ns.gang.getMemberInformation(name); // Get entire gang meber onject from name.
-            var ascResult = ns.gang.getAscensionResult(memberInfo.name);  // Get the result of an ascension without ascending.
-
-            // This is a HACKING GANG. Use [hack] Hacking, not [str] Strength.
-            var hackingMultiplier = ascResult.hack; // Hacking multiplier gained from ascending
-
-            // This is a HACKING GANG. Use [hack_asc_mult] Hacking, not [str_asc_mult] Strength.
-            var currentMultiplier = memberInfo.hack_asc_mult; // Hacking multiplier from ascensions
-
-            // ns.print("Hacking multiplier gained from ascending: " + ascResult.hack);
-            // ns.print("currentMultiplier: " + currentMultiplier);
-
-            // Only ascend if the multiplier is less than 50 and will increase by at least 2
-            if (currentMultiplier < 50 && ascResult != undefined) {
-
-                let multchange = (currentMultiplier * hackingMultiplier) - currentMultiplier;
-                //ns.print("Multiplier change: " + multchange);
-
-                if (multchange >= 2) {
-                    // Ascend
-                    return (ascResult.hack >= 2); // Hacking multiplier gained from ascending
-                }
-            } else if (ascResult == undefined) {
-                return false;
-            }
-        } catch (Err) {
-            ns.print(Err);
-        }
-    }
-
     // Ascend this current gang member
     async function Ascend(name) {
-        ns.gang.ascendMember(name); // Ascend the specified Gang Member.        
+        return ns.gang.ascendMember(name); // Ascend the specified Gang Member.       
     }
 
     // Buy HackTools, HackAugs, CrimeAugs, Weapons, Armor, Vehicles
@@ -494,7 +486,7 @@ export async function main(ns) {
 
             var result = alreadyOwns_HackAugs + alreadyOwns_CrimeAugs + alreadyOwns_Weapons + alreadyOwns_Armor + alreadyOwns_Vehicles + alreadyOwns_Rootkits;
             result = result.substring(0, result.length - 2); // remove last comma.
-            //ns.print("   " + name + " already owns: " + result);
+            ns.print("   " + name + " already owns: " + result);
             memberPrepped.push(name); // Add member to list of completed prepped names.
         }
     }
