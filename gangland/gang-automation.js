@@ -6,16 +6,15 @@ import {
 export async function main(ns) {
 
     /*
-    
     General gang action plan: 
-        Respect 
+        Gain Respect 
             -> 12 members 
                 -> power 
-                    -> all win chances >55% 
-                        -> engage in territory warfare on 
+                    -> all win chances > 55% 
+                        -> if engage in territory warfare is on 
                             -> power/money (keep win chances > 55%) 
                                 -> territory 100% 
-                                    -> money/rep
+                                    -> gain money/rep
     ---------------------------------------------------------------
         OVERRIDE PARAM 
         (Forces all members to perform a singular task.)
