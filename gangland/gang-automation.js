@@ -308,10 +308,9 @@ export async function main(ns) {
                     if (Math.floor(multchange) < 2) {
                         output = " no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("Waiting...", [TextTransforms.Color.ChartsGray]) + rbracket + " " + multchange;
                     } else {
-                        if (await Ascend(_mem)) {
-                            membersAscended.push(_mem); // let this grow.
-                            output = " no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("✨Ascending✨", [TextTransforms.Color.ChartsGreen]) + rbracket + "";
-                        }
+                        await Ascend(_mem);
+                        output = " no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("✨Ascending✨", [TextTransforms.Color.ChartsGreen]) + rbracket + "";
+                        membersAscended.push(_mem); // let this grow.                            
                     }
                 }
 
@@ -380,7 +379,7 @@ export async function main(ns) {
                 // buy item
                 if (buyingAugmentations) {
                     memberHackAugs.push(name + "|" + e);
-                    ns.print("   buying " + name + ": " + e);
+                    //ns.print("   buying " + name + ": " + e);
                     ns.gang.purchaseEquipment(name, e); // ["DataJack", "Neuralstimulator", "BitWire"];
                 }
             }
@@ -398,7 +397,7 @@ export async function main(ns) {
                 // buy item
                 if (buyingAugmentations) {
                     memberCrimeAugs.push(name + "|" + e);
-                    ns.print("   buying " + name + ": " + e);
+                    //ns.print("   buying " + name + ": " + e);
                     ns.gang.purchaseEquipment(name, e); // ["Bionic Spine", "Bionic Arms", "Bionic Legs", "Graphene Bone Lacings", "Synthetic Heart", "BrachiBlades", "Nanofiber Weave", "Synfibril Muscle"];
                 }
             }
@@ -416,7 +415,7 @@ export async function main(ns) {
                 // buy item
                 if (buyingWeapons) {
                     memberWeapons.push(name + "|" + e);
-                    ns.print("   buying " + name + ": " + e);
+                    //ns.print("   buying " + name + ": " + e);
                     ns.gang.purchaseEquipment(name, e); // ["Baseball Bat", "Katana", "Glock 18C", "P90C", "Steyr AUG", "AK-47", "M15A10 Assault Rifle", "AWM Sniper Rifle"];
                 }
             }
@@ -434,7 +433,7 @@ export async function main(ns) {
                 // buy item
                 if (buyingArmor) {
                     memberArmor.push(name + "|" + e);
-                    ns.print("   buying " + name + ": " + e);
+                    //ns.print("   buying " + name + ": " + e);
                     ns.gang.purchaseEquipment(name, e); // ["Liquid Body Armor", "Bulletproof Vest", "Full Body Armor", "Graphene Plating Armor"];
                 }
             }
@@ -452,7 +451,7 @@ export async function main(ns) {
                 // buy item
                 if (buyingVehicles) {
                     memberVehicles.push(name + "|" + e);
-                    ns.print("   buying " + name + ": " + e);
+                    //ns.print("   buying " + name + ": " + e);
                     ns.gang.purchaseEquipment(name, e); // ["Liquid Body Armor", "Bulletproof Vest", "Full Body Armor", "Graphene Plating Armor"];
                 }
             }
@@ -470,7 +469,7 @@ export async function main(ns) {
                 // buy item
                 if (buyingRootkits) {
                     memberRootkits.push(name + "|" + e);
-                    ns.print("   buying " + name + ": " + e);
+                    //ns.print("   buying " + name + ": " + e);
                     ns.gang.purchaseEquipment(name, e); // "NUKE Rootkit", "Soulstealer Rootkit", "Demon Rootkit", "Hmap Node", "Jack the Ripper"];
                 }
             }
