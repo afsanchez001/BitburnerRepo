@@ -1,3 +1,9 @@
+/*
+	(1/30/23)
+	This script was written by u/SteaksAreReal
+	Full repo is here: https://github.com/xxxsinx/bitburner
+*/
+
 const HEADER = 0;	// Index of the header styles
 const DIVIDER = 1	// Index of the horizontal divider style
 const FOOTER = 2;	// Index of the footer style
