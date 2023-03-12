@@ -20,13 +20,23 @@ export async function main(ns) {
         OVERRIDE PARAM 
         (Forces all members to perform a singular task.)
 
-        No args = normal operation.
-
-        Optional parameters are:
-        respect
-        earn
-        decrease
-        train
+        No [args] = normal operation.
+        
+        NORMAL USAGE: run gang-automation.js        // Script will use stats to determine tasks, equipment purchases (prepping), and ascending.
+        
+        Optional OVERRIDE parameters are:        
+         • respect
+         • earn
+         • decrease
+         • train
+         • warfare
+         (Only one override arg can be passed in.)
+         
+         USAGE: run gang-automation.js respect      // Script will assign tasks that earn you respect | Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
+                run gang-automation.js earn         // Script will assign tasks that earn you top $money | Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
+                run gang-automation.js decrease     // Script will assign tasks to lower your wanted level | Ethical Hacking, Vigilante Justice
+                run gang-automation.js train        // Script will detect your gang type, and assign appropriate training regimen | Train Combat, Train Hacking, Train Charisma
+                run gang-automation.js warfare      // Script will assing your gang to Territory Warfare
     */
 
     const [override] = ns.args;
@@ -293,31 +303,50 @@ export async function main(ns) {
                 var memberInfo = ns.gang.getMemberInformation(_mem); // Get entire gang meber onject from name.
                 var ascResult = ns.gang.getAscensionResult(_mem);  // Get the result of an ascension without ascending.
 
-                if (ascResult != undefined) {
+                if (ascResult != undefined) {                    
                     var hackingMultiplier = ascResult.hack; // Hacking multiplier gained from ascending // This is a HACKING GANG. Use [hack] Hacking, not [str] Strength.
-                    var currentMultiplier = memberInfo.hack_asc_mult; // Hacking multiplier from ascensions // This is a HACKING GANG. Use [hack_asc_mult] Hacking, not [str_asc_mult] Strength.
-                    // ns.print(" \n");
-                    // ns.print("Ascend checking: " + _mem);
-                    // ns.print("Hacking multiplier gained from ascending: " + ascResult.hack);
-                    // ns.print("currentMultiplier: " + currentMultiplier);
-                    var multchange = (currentMultiplier * hackingMultiplier) - currentMultiplier;
+                    //var currentMultiplier = memberInfo.hack_asc_mult; // Hacking multiplier from ascensions // This is a HACKING GANG. Use [hack_asc_mult] Hacking, not [str_asc_mult] Strength.
+                    var currentMultiplier = CalculateAscendTreshold(ns,_mem); // Credit: Mysteyes.
 
-                    var doAsc = false;
-                    if (multchange <= 2.0) {
-                        output = " no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("Waiting...", [TextTransforms.Color.ChartsGray]) + rbracket + " " + multchange;
-                    } else if (multchange >= 2.0) {
-                        output = " no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("✨Ascending✨", [TextTransforms.Color.ChartsGreen]) + rbracket + " " + multchange;
-                        doAsc = true;
+                    // Only ascend if the multiplier is less than 10 and will increase by at least 2
+                    if (currentMultiplier < 10) {
+                        {
+                            //  ns.print(" \n");
+                            //  ns.print("Ascend checking: " + _mem);
+                            //  ns.print("Hacking multiplier gained from ascending: " + ascResult.hack);
+                            //  ns.print("currentMultiplier: " + currentMultiplier);
+                        }
+                        // multiply the current multiplier by the ascension results, and then subtract the current multiplier. 
+                        // The difference is the increase.
+                        var multchange = (currentMultiplier * hackingMultiplier) - currentMultiplier;
+
+                        var doAsc = false;
+                        if (multchange <= 2.0) {
+                            // Do nothing.
+                            output = "no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("Waiting...", [TextTransforms.Color.ChartsGray]) + rbracket + " " + multchange;
+                        } else if (multchange >= 2.0) {
+                            // Give message to ascend.
+                            output = "no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("✨Ascending✨", [TextTransforms.Color.ChartsGreen]) + rbracket + " " + multchange;
+                            doAsc = true;
+                        }
+
+                        ns.print(member_name + ", " + output + " " + prepping + " \n");
+
+                        /*
+                            ASCEND
+                            ------
+                            Doing Ascend(_mem) here, because there is a glitch that prevents
+                            the output string from displaying when Ascend(_mem)
+                            is lumped into the 'else if (multchange >= 2.0){ ... }' conditional area.
+                        */
+                        if (doAsc) {
+                            await ns.sleep(5);
+                            Ascend(_mem); // ascend the member
+                            membersAscended.push(_mem); // let this grow.
+                        }
+
                     }
 
-                    ns.print(member_name + ", " + output + " " + prepping + " \n");
-
-                    // Doing this here because there is a glitch that prevents the output from displaying when Ascend(_mem) is lumped in to the else if (multchange >= 0.3) condition area.
-                    if (doAsc) {                         
-                        await ns.sleep(5);
-                        Ascend(_mem);
-                        membersAscended.push(_mem); // let this grow.
-                    }
                 }
             } catch {
                 // ignore.                        
@@ -332,6 +361,24 @@ export async function main(ns) {
         await ns.sleep(delay);
     }
 
+    // Credit: Mysteyes. https://discord.com/channels/415207508303544321/415207923506216971/940379724214075442
+    function CalculateAscendTreshold(ns, member) {
+        let mult = ns.gang.getMemberInformation(member)['hack_asc_mult'];
+        if (mult < 1.632) return 1.6326;
+        if (mult < 2.336) return 1.4315;
+        if (mult < 2.999) return 1.284;
+        if (mult < 3.363) return 1.2125;
+        if (mult < 4.253) return 1.1698;
+        if (mult < 4.860) return 1.1428;
+        if (mult < 5.455) return 1.1225;
+        if (mult < 5.977) return 1.0957;
+        if (mult < 6.496) return 1.0869;
+        if (mult < 7.008) return 1.0789;
+        if (mult < 7.519) return 1.073;
+        if (mult < 8.025) return 1.0673;
+        if (mult < 8.513) return 1.0631;
+        return 1.0591;
+    }
 
     function NumberOfTimesAscended(membersAscended, name) {
         var timesAscended = 0;
