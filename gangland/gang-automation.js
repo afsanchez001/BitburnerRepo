@@ -303,9 +303,9 @@ export async function main(ns) {
                     var multchange = (currentMultiplier * hackingMultiplier) - currentMultiplier;
 
                     var doAsc = false;
-                    if (multchange <= 0.3) {
+                    if (multchange <= 2.0) {
                         output = " no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("Waiting...", [TextTransforms.Color.ChartsGray]) + rbracket + " " + multchange;
-                    } else if (multchange >= 0.3) {
+                    } else if (multchange >= 2.0) {
                         output = " no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("✨Ascending✨", [TextTransforms.Color.ChartsGreen]) + rbracket + " " + multchange;
                         doAsc = true;
                     }
