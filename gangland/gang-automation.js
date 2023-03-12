@@ -283,7 +283,7 @@ export async function main(ns) {
                 prepping = " " + lbracket + TextTransforms.apply("Fully Prepped 🔪💣🛡️", [TextTransforms.Color.ChartsGreen]) + rbracket + "";
             } else {
                 // PREP MEMBER        
-                prepping = " " + lbracket + TextTransforms.apply("Prepping...", [TextTransforms.Color.ChartsGray]) + rbracket + "";
+                prepping = " " + lbracket + TextTransforms.apply("✨Prepping✨", [TextTransforms.Color.ChartsGray]) + rbracket + "";
                 Prepare(_mem);
             }
 
@@ -294,32 +294,34 @@ export async function main(ns) {
                 var ascResult = ns.gang.getAscensionResult(_mem);  // Get the result of an ascension without ascending.
 
                 if (ascResult != undefined) {
-
                     var hackingMultiplier = ascResult.hack; // Hacking multiplier gained from ascending // This is a HACKING GANG. Use [hack] Hacking, not [str] Strength.
                     var currentMultiplier = memberInfo.hack_asc_mult; // Hacking multiplier from ascensions // This is a HACKING GANG. Use [hack_asc_mult] Hacking, not [str_asc_mult] Strength.
-
                     // ns.print(" \n");
                     // ns.print("Ascend checking: " + _mem);
                     // ns.print("Hacking multiplier gained from ascending: " + ascResult.hack);
                     // ns.print("currentMultiplier: " + currentMultiplier);
-
                     var multchange = (currentMultiplier * hackingMultiplier) - currentMultiplier;
 
-                    if (Math.floor(multchange) < 2) {
+                    var doAsc = false;
+                    if (multchange <= 0.3) {
                         output = " no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("Waiting...", [TextTransforms.Color.ChartsGray]) + rbracket + " " + multchange;
-                    } else {
-                        await Ascend(_mem);
-                        output = " no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("✨Ascending✨", [TextTransforms.Color.ChartsGreen]) + rbracket + "";
-                        membersAscended.push(_mem); // let this grow.                            
+                    } else if (multchange >= 0.3) {
+                        output = " no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("✨Ascending✨", [TextTransforms.Color.ChartsGreen]) + rbracket + " " + multchange;
+                        doAsc = true;
+                    }
+
+                    ns.print(member_name + ", " + output + " " + prepping + " \n");
+
+                    // Doing this here because there is a glitch that prevents the output from displaying when Ascend(_mem) is lumped in to the else if (multchange >= 0.3) condition area.
+                    if (doAsc) {                         
+                        await ns.sleep(5);
+                        Ascend(_mem);
+                        membersAscended.push(_mem); // let this grow.
                     }
                 }
-
             } catch {
                 // ignore.                        
             }
-
-            ns.print(member_name + ", " + output + " " + prepping + " \n");
-
         }
 
         // RESET ENVIRONMNENT
