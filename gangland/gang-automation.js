@@ -26,8 +26,11 @@ export async function main(ns) {
          • respect
          • earn
          • decrease
-         • train
+         • charisma
+         • hacking
+         • combat
          • warfare
+         
          (Only one override arg can be passed in.)
          
          USAGE: run gang-automation.js respect      // Script will assign tasks that earn you respect | Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
