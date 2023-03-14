@@ -5,7 +5,7 @@ import {
 /** @param {NS} ns */
 export async function main(ns) {
 
-    /*
+    /*    
     General gang action plan: 
         Gain Respect 
             -> 12 members 
@@ -18,7 +18,6 @@ export async function main(ns) {
     ---------------------------------------------------------------
         OVERRIDE PARAM 
         (Forces all members to perform a singular task.)
-
         No [args] = normal operation.
         
         NORMAL USAGE: run gang-automation.js        // Script will use stats to determine tasks, equipment purchases (prepping), and ascending.
@@ -34,7 +33,9 @@ export async function main(ns) {
          USAGE: run gang-automation.js respect      // Script will assign tasks that earn you respect | Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
                 run gang-automation.js earn         // Script will assign tasks that earn you top $money | Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
                 run gang-automation.js decrease     // Script will assign tasks to lower your wanted level | Ethical Hacking, Vigilante Justice
-                run gang-automation.js train        // Script will detect your gang type, and assign appropriate training regimen | Train Combat, Train Hacking, Train Charisma
+                run gang-automation.js charisma     // Script will assign 'Train Charisma'
+                run gang-automation.js hacking      // Script will assign 'Train Hacking'
+                run gang-automation.js combat       // Script will assign 'Train Combat'
                 run gang-automation.js warfare      // Script will assing your gang to Territory Warfare
     */
 
@@ -43,14 +44,25 @@ export async function main(ns) {
 
     if (override == undefined || override.trim() == "") {
         overrideTask = ""; // ignore
+
     } else if (override == "respect") {
         overrideTask = "Cyberterrorism"; // Cyberterrorism, DDoS Attacks, Plant Virus, Money Laundering
+
     } else if (override == "earn") {
         overrideTask = "Money Laundering"; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
+
     } else if (override == "decrease") {
         overrideTask = "Ethical Hacking"; // Ethical Hacking, Vigilante Justice  
-    } else if (override == "train") {
+
+    } else if (override == "charisma") {
+        overrideTask = "Train Charisma"; // Train Combat, Train Hacking, Train Charisma
+
+    } else if (override == "hacking") {
         overrideTask = "Train Hacking"; // Train Combat, Train Hacking, Train Charisma
+
+    } else if (override == "combat") {
+        overrideTask = "Train Combat"; // Train Combat, Train Hacking, Train Charisma
+
     } else if (override == "warfare") {
         overrideTask = "Territory Warfare"; // Territory Warfare
     }
@@ -302,10 +314,10 @@ export async function main(ns) {
                 var memberInfo = ns.gang.getMemberInformation(_mem); // Get entire gang meber onject from name.
                 var ascResult = ns.gang.getAscensionResult(_mem);  // Get the result of an ascension without ascending.
 
-                if (ascResult != undefined) {                    
+                if (ascResult != undefined) {
                     var hackingMultiplier = ascResult.hack; // Hacking multiplier gained from ascending // This is a HACKING GANG. Use [hack] Hacking, not [str] Strength.
                     //var currentMultiplier = memberInfo.hack_asc_mult; // Hacking multiplier from ascensions // This is a HACKING GANG. Use [hack_asc_mult] Hacking, not [str_asc_mult] Strength.
-                    var currentMultiplier = CalculateAscendTreshold(ns,_mem); // Credit: Mysteyes.
+                    var currentMultiplier = CalculateAscendTreshold(ns, _mem); // Credit: Mysteyes.
 
                     // Only ascend if the multiplier is less than 10 and will increase by at least 2
                     if (currentMultiplier < 10) {
@@ -622,8 +634,13 @@ export async function main(ns) {
                     task = topEarners[getRandomInt(topEarners.length)]; // Ransomware, Phishing, Identity Theft, Fraud & Counterfeiting, Money Laundering
                 } else if (override == "decrease") {
                     task = topVirtuous[getRandomInt(topVirtuous.length)]; // Ethical Hacking, Vigilante Justice  
-                } else if (override == "train") {
+
+                } else if (override == "charisma") {
+                    task = task = training[2]; // Train Combat 0, Train Hacking 1, Train Charisma 2
+                } else if (override == "hacking") {
                     task = task = training[1]; // Train Combat 0, Train Hacking 1, Train Charisma 2
+                } else if (override == "combat") {
+                    task = task = training[0]; // Train Combat 0, Train Hacking 1, Train Charisma 2
                 }
 
                 // ASSIGN TASK
