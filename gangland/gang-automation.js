@@ -318,8 +318,8 @@ export async function main(ns) {
 
                 if (ascResult != undefined) {
 
-                    // Creidt: u/Yobikir
-                    // https://www.reddit.com/r/Bitburner/comments/11p99u9/i_modified_my_gang_automation_script_and_updated/
+                    // CREDIT: Yobikir
+                    // https://github.com/RKDE1988/Bitburner/blob/main/Gang/Manager.js
                     let next_Mult;
                     let current_Mult;
                     let next_Point = ns.formulas.gang.ascensionPointsGain(memberInfo.hack_exp);
@@ -333,15 +333,22 @@ export async function main(ns) {
                     var doAsc = false;
                     if ((next_Mult / current_Mult) >= CalculateAscendTreshold(current_Mult)) {
                         // Give message to ascend.
-                        output = "times_asc: " + numTimesAscended + " " + lbracket + TextTransforms.apply("status: ✨Ascending✨", [TextTransforms.Color.ChartsGreen]) + rbracket + " " + nxtmutlp_div_by_currentmultp + " >= " + calculated_asc_threshold;
+                        output = "times_asc: " + numTimesAscended + " " + lbracket + TextTransforms.apply("✨Ascending✨", [TextTransforms.Color.ChartsGreen]) + rbracket + " " + nxtmutlp_div_by_currentmultp + " >= " + calculated_asc_threshold + " (" + TextTransforms.apply("nxt_mltp: ", [TextTransforms.Color.ChartsGray]) + ns.formatNumber(next_Mult, "0.000a") + ")";
                         doAsc = true;
                     } else {
                         // Do nothing.
-                        output = "times_asc: " + numTimesAscended + " " + lbracket + TextTransforms.apply("status: Waiting...", [TextTransforms.Color.ChartsGray]) + rbracket + " " + nxtmutlp_div_by_currentmultp + " < " + calculated_asc_threshold;
+                        output = "times_asc: " + numTimesAscended + " " + lbracket + TextTransforms.apply("Working", [TextTransforms.Color.ChartsGray]) + rbracket + " " + nxtmutlp_div_by_currentmultp + " < " + calculated_asc_threshold + " (" + TextTransforms.apply("nxt_mltp: ", [TextTransforms.Color.ChartsGray]) + ns.formatNumber(next_Mult, "0.000a") + ")";
                     }
 
                     ns.print(member_name + ", " + output + " " + prepping + " \n");
 
+                    /*
+                        ASCEND
+                        ------
+                        Doing Ascend(_mem) here, because there is a glitch that prevents
+                        the output string from displaying when Ascend(_mem)
+                        is lumped into the 'else if (multchange >= 2.0){ ... }' conditional area.
+                    */
                     if (doAsc) {
                         await ns.sleep(5);
                         Ascend(_mem); // ascend the member
