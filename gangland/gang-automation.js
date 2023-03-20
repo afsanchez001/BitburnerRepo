@@ -102,7 +102,6 @@ export async function main(ns) {
 
     const MemberNames = ["Genie", "Myconid", "Ogre", "Pixie", "Treant", "Troglodyte", "Loco", "Puppet", "Stretch", "Eternity", "Zen", "Cable"];
     /*
-        , "Impulse", "Cent", "Canine", "Nova", "Night", "Artemis", "Game", "Bone", "Rebel", "Friction"
         https://www.fantasynamegenerators.com/cyberpunk-names.php
     */
 
@@ -192,9 +191,6 @@ export async function main(ns) {
             await RecruitProspect();
         } else {
         }
-
-
-
 
         // GET ALL HACK SKILL LEVELS. Sort members from highest to lowest Hack().
         const skillSort = members.sort((b, a) => ns.gang.getMemberInformation(a).hack - ns.gang.getMemberInformation(b).hack)
@@ -386,7 +382,6 @@ export async function main(ns) {
         else return 1.0591;
     }
 
-
     function NumberOfTimesAscended(membersAscended, name) {
         var timesAscended = 0;
         for (var i = 0; i < membersAscended.length; i++) {
@@ -414,135 +409,162 @@ export async function main(ns) {
     // Buy HackTools, HackAugs, CrimeAugs, Weapons, Armor, Vehicles
     function Prepare(name) {
 
-        var alreadyOwns_HackAugs = "";
-        var alreadyOwns_CrimeAugs = "";
-        var alreadyOwns_Weapons = "";
-        var alreadyOwns_Armor = "";
-        var alreadyOwns_Vehicles = "";
-        var alreadyOwns_Rootkits = "";
-
-        //ns.print(" \n");
+        if (memberPrepped.includes(name)) {
+            // get out. This gang member has everything.
+            return;
+        }
 
         HackAugs.forEach((e) => {
+            let cost = ns.formatNumber(ns.gang.getEquipmentCost(e), "0.000a");
+            let type = ns.gang.getEquipmentType(e);
+
+            // ["DataJack", "Neuralstimulator", "BitWire"];
             if (memberHackAugs == null) {
-                if (buyingAugmentations) { // buy first item
+                // buy first item
+                if (buyingAugmentations && (ns.getServerMoneyAvailable('home') > cost)) {
                     memberHackAugs.push(name + "|" + e);
                     ns.gang.purchaseEquipment(name, e);
                 }
-            } else if (memberHackAugs.includes(name + "|" + e)) {
-                alreadyOwns_HackAugs += e + ", ";
-            } else {
-                // buy item
+            } else if (!memberHackAugs.includes(name + "|" + e)) {
+                // buy new item
                 if (buyingAugmentations) {
                     memberHackAugs.push(name + "|" + e);
-                    //ns.print("   buying " + name + ": " + e);
-                    ns.gang.purchaseEquipment(name, e); // ["DataJack", "Neuralstimulator", "BitWire"];
+                    ns.print("   (" + name + ") buying : '" + e + "' for $" + cost);
+                    ns.gang.purchaseEquipment(name, e);
                 }
             }
         });
 
         CrimeAugs.forEach((e) => {
+            let cost = ns.formatNumber(ns.gang.getEquipmentCost(e), "0.000a");
+            let type = ns.gang.getEquipmentType(e);
+
+            // ["Bionic Spine", "Bionic Arms", "Bionic Legs", "Graphene Bone Lacings", "Synthetic Heart", "BrachiBlades", "Nanofiber Weave", "Synfibril Muscle"];
             if (memberCrimeAugs == null) {
-                if (buyingAugmentations) { // buy first item
+                // buy first item
+                if (buyingAugmentations && (ns.getServerMoneyAvailable('home') > cost)) {
                     memberCrimeAugs.push(name + "|" + e);
                     ns.gang.purchaseEquipment(name, e);
                 }
-            } else if (memberCrimeAugs.includes(name + "|" + e)) {
-                alreadyOwns_CrimeAugs += e + ", ";
-            } else {
-                // buy item
+            } else if (!memberCrimeAugs.includes(name + "|" + e)) {
+                // buy new item
                 if (buyingAugmentations) {
                     memberCrimeAugs.push(name + "|" + e);
-                    //ns.print("   buying " + name + ": " + e);
-                    ns.gang.purchaseEquipment(name, e); // ["Bionic Spine", "Bionic Arms", "Bionic Legs", "Graphene Bone Lacings", "Synthetic Heart", "BrachiBlades", "Nanofiber Weave", "Synfibril Muscle"];
+                    ns.print("   (" + name + ") buying : '" + e + "' for $" + cost);
+                    ns.gang.purchaseEquipment(name, e);
                 }
             }
         });
 
         Weapons.forEach((e) => {
+            let cost = ns.formatNumber(ns.gang.getEquipmentCost(e), "0.000a");
+            let type = ns.gang.getEquipmentType(e);
+
+            // ["Baseball Bat", "Katana", "Glock 18C", "P90C", "Steyr AUG", "AK-47", "M15A10 Assault Rifle", "AWM Sniper Rifle"];
             if (memberWeapons == null) {
-                if (buyingWeapons) { // buy first item
+                // buy first item
+                if (buyingWeapons && (ns.getServerMoneyAvailable('home') > cost)) {
                     memberWeapons.push(name + "|" + e);
                     ns.gang.purchaseEquipment(name, e);
                 }
-            } else if (memberWeapons.includes(name + "|" + e)) {
-                alreadyOwns_Weapons += e + ", ";
-            } else {
-                // buy item
+            } else if (!memberWeapons.includes(name + "|" + e)) {
+                // buy new item
                 if (buyingWeapons) {
                     memberWeapons.push(name + "|" + e);
-                    //ns.print("   buying " + name + ": " + e);
-                    ns.gang.purchaseEquipment(name, e); // ["Baseball Bat", "Katana", "Glock 18C", "P90C", "Steyr AUG", "AK-47", "M15A10 Assault Rifle", "AWM Sniper Rifle"];
+                    ns.print("   (" + name + ") buying : '" + e + "' for $" + cost);
+                    ns.gang.purchaseEquipment(name, e);
                 }
             }
         });
 
         Armor.forEach((e) => {
+            let cost = ns.formatNumber(ns.gang.getEquipmentCost(e), "0.000a");
+            let type = ns.gang.getEquipmentType(e);
+
+            // ["Liquid Body Armor", "Bulletproof Vest", "Full Body Armor", "Graphene Plating Armor"];
             if (memberArmor == null) {
-                if (buyingArmor) { // buy first item
+                // buy first item
+                if (buyingArmor && (ns.getServerMoneyAvailable('home') > cost)) {
                     memberArmor.push(name + "|" + e);
                     ns.gang.purchaseEquipment(name, e);
                 }
-            } else if (memberArmor.includes(name + "|" + e)) {
-                alreadyOwns_Armor += e + ", ";
-            } else {
-                // buy item
+            } else if (!memberArmor.includes(name + "|" + e)) {
+                // buy new item
                 if (buyingArmor) {
                     memberArmor.push(name + "|" + e);
-                    //ns.print("   buying " + name + ": " + e);
-                    ns.gang.purchaseEquipment(name, e); // ["Liquid Body Armor", "Bulletproof Vest", "Full Body Armor", "Graphene Plating Armor"];
+                    ns.print("   (" + name + ") buying : '" + e + "' for $" + cost);
+                    ns.gang.purchaseEquipment(name, e);
                 }
             }
         });
 
         Vehicles.forEach((e) => {
+            let cost = ns.formatNumber(ns.gang.getEquipmentCost(e), "0.000a");
+            let type = ns.gang.getEquipmentType(e);
+
+            // ["Ford Flex V20", "White Ferrari", "ATX1070 Superbike", "Mercedes-Benz S9001"];
             if (memberVehicles == null) {
-                if (buyingVehicles) { // buy first item
-                    memberArmor.push(name + "|" + e);
+                // buy first item
+                if (buyingVehicles && (ns.getServerMoneyAvailable('home') > cost)) {
+                    memberVehicles.push(name + "|" + e);
                     ns.gang.purchaseEquipment(name, e);
                 }
-            } else if (memberVehicles.includes(name + "|" + e)) {
-                alreadyOwns_Vehicles += e + ", ";
-            } else {
-                // buy item
+            } else if (!memberVehicles.includes(name + "|" + e)) {
+                // buy new item
                 if (buyingVehicles) {
                     memberVehicles.push(name + "|" + e);
-                    //ns.print("   buying " + name + ": " + e);
-                    ns.gang.purchaseEquipment(name, e); // ["Liquid Body Armor", "Bulletproof Vest", "Full Body Armor", "Graphene Plating Armor"];
+                    ns.print("   (" + name + ") buying : '" + e + "' for $" + cost);
+                    ns.gang.purchaseEquipment(name, e);
                 }
             }
         });
 
         Rootkits.forEach((e) => {
+            let cost = ns.formatNumber(ns.gang.getEquipmentCost(e), "0.000a");
+            let type = ns.gang.getEquipmentType(e);
+
+            // "NUKE Rootkit", "Soulstealer Rootkit", "Demon Rootkit", "Hmap Node", "Jack the Ripper"];
             if (memberRootkits == null) {
-                if (buyingRootkits) { // buy first item
+                // buy first item
+                if (buyingRootkits && (ns.getServerMoneyAvailable('home') > cost)) {
                     memberRootkits.push(name + "|" + e);
                     ns.gang.purchaseEquipment(name, e);
                 }
-            } else if (memberRootkits.includes(name + "|" + e)) {
-                alreadyOwns_Rootkits += e + ", ";
-            } else {
-                // buy item
+            } else if (!memberRootkits.includes(name + "|" + e)) {
+                // buy new item
                 if (buyingRootkits) {
                     memberRootkits.push(name + "|" + e);
-                    //ns.print("   buying " + name + ": " + e);
-                    ns.gang.purchaseEquipment(name, e); // "NUKE Rootkit", "Soulstealer Rootkit", "Demon Rootkit", "Hmap Node", "Jack the Ripper"];
+                    ns.print("   (" + name + ") buying : '" + e + "' for $" + cost);
+                    ns.gang.purchaseEquipment(name, e);
                 }
             }
         });
 
         // SHOW INVENTORY
-        if (alreadyOwns_HackAugs != "" ||
-            alreadyOwns_CrimeAugs != "" ||
-            alreadyOwns_Weapons != "" ||
-            alreadyOwns_Armor != "" ||
-            alreadyOwns_Vehicles != "" ||
-            alreadyOwns_Rootkits != "") {
+        var memberHackAugsCount = 0;
+        var memberCrimeAugsCount = 0;
+        var memberWeaponsCount = 0;
+        var memberArmorCount = 0;
+        var memberVehiclesCount = 0;
+        var memberRootkitsCount = 0;
 
-            var result = alreadyOwns_HackAugs + alreadyOwns_CrimeAugs + alreadyOwns_Weapons + alreadyOwns_Armor + alreadyOwns_Vehicles + alreadyOwns_Rootkits;
-            result = result.substring(0, result.length - 2); // remove last comma.
-            ns.print("   " + name + " already owns: " + result);
+        for (var i = 0; i < memberHackAugs.length; ++i) { if (memberHackAugs[i].toString().includes(name)) { memberHackAugsCount++; } }
+        for (var i = 0; i < memberCrimeAugs.length; ++i) { if (memberCrimeAugs[i].toString().includes(name)) { memberCrimeAugsCount++; } }
+        for (var i = 0; i < memberWeapons.length; ++i) { if (memberWeapons[i].toString().includes(name)) { memberWeaponsCount++; } }
+        for (var i = 0; i < memberArmor.length; ++i) { if (memberArmor[i].toString().includes(name)) { memberArmorCount++; } }
+        for (var i = 0; i < memberVehicles.length; ++i) { if (memberVehicles[i].toString().includes(name)) { memberVehiclesCount++; } }
+        for (var i = 0; i < memberRootkits.length; ++i) { if (memberRootkits[i].toString().includes(name)) { memberRootkitsCount++; } }
+
+        if (memberHackAugsCount + memberCrimeAugsCount + memberWeaponsCount + memberArmorCount + memberVehiclesCount + memberRootkitsCount == 32) {
             memberPrepped.push(name); // Add member to list of completed prepped names.
+        } else {
+            ns.print("   " + name + " [equipment/augs: "
+                + memberHackAugsCount + " | "
+                + memberCrimeAugsCount + " | "
+                + memberWeaponsCount + " | "
+                + memberArmorCount + " | "
+                + memberVehiclesCount + " | "
+                + memberRootkitsCount + "]");
         }
     }
 
