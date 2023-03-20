@@ -311,56 +311,42 @@ export async function main(ns) {
                 Prepare(_mem);
             }
 
-            // ASCEND
-            var multchange = 0;
+            // ASCEND            
             try {
                 var memberInfo = ns.gang.getMemberInformation(_mem); // Get entire gang meber onject from name.
                 var ascResult = ns.gang.getAscensionResult(_mem);  // Get the result of an ascension without ascending.
 
                 if (ascResult != undefined) {
-                    var hackingMultiplier = ascResult.hack; // Hacking multiplier gained from ascending // This is a HACKING GANG. Use [hack] Hacking, not [str] Strength.
-                    //var currentMultiplier = memberInfo.hack_asc_mult; // Hacking multiplier from ascensions // This is a HACKING GANG. Use [hack_asc_mult] Hacking, not [str_asc_mult] Strength.
-                    var currentMultiplier = CalculateAscendTreshold(ns, _mem); // Credit: Mysteyes.
 
-                    // Only ascend if the multiplier is less than 10 and will increase by at least 2
-                    if (currentMultiplier < 10) {
-                        {
-                            //  ns.print(" \n");
-                            //  ns.print("Ascend checking: " + _mem);
-                            //  ns.print("Hacking multiplier gained from ascending: " + ascResult.hack);
-                            //  ns.print("currentMultiplier: " + currentMultiplier);
-                        }
-                        // multiply the current multiplier by the ascension results, and then subtract the current multiplier. 
-                        // The difference is the increase.
-                        var multchange = (currentMultiplier * hackingMultiplier) - currentMultiplier;
+                    // Creidt: u/Yobikir
+                    // https://www.reddit.com/r/Bitburner/comments/11p99u9/i_modified_my_gang_automation_script_and_updated/
+                    let next_Mult;
+                    let current_Mult;
+                    let next_Point = ns.formulas.gang.ascensionPointsGain(memberInfo.hack_exp);
 
-                        var doAsc = false;
-                        if (multchange <= 2.0) {
-                            // Do nothing.
-                            output = "no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("Waiting...", [TextTransforms.Color.ChartsGray]) + rbracket + " " + multchange;
-                        } else if (multchange >= 2.0) {
-                            // Give message to ascend.
-                            output = "no. times ascended: " + numTimesAscended + " " + lbracket + TextTransforms.apply("✨Ascending✨", [TextTransforms.Color.ChartsGreen]) + rbracket + " " + multchange;
-                            doAsc = true;
-                        }
+                    next_Mult = ns.formulas.gang.ascensionMultiplier(memberInfo.hack_asc_points + next_Point);
+                    current_Mult = memberInfo.hack_asc_mult;
 
-                        ns.print(member_name + ", " + output + " " + prepping + " \n");
+                    let nxtmutlp_div_by_currentmultp = (next_Mult / current_Mult);
+                    let calculated_asc_threshold = CalculateAscendTreshold(current_Mult);
 
-                        /*
-                            ASCEND
-                            ------
-                            Doing Ascend(_mem) here, because there is a glitch that prevents
-                            the output string from displaying when Ascend(_mem)
-                            is lumped into the 'else if (multchange >= 2.0){ ... }' conditional area.
-                        */
-                        if (doAsc) {
-                            await ns.sleep(5);
-                            Ascend(_mem); // ascend the member
-                            membersAscended.push(_mem); // let this grow.
-                        }
-
+                    var doAsc = false;
+                    if ((next_Mult / current_Mult) >= CalculateAscendTreshold(current_Mult)) {
+                        // Give message to ascend.
+                        output = "times_asc: " + numTimesAscended + " " + lbracket + TextTransforms.apply("status: ✨Ascending✨", [TextTransforms.Color.ChartsGreen]) + rbracket + " " + nxtmutlp_div_by_currentmultp + " >= " + calculated_asc_threshold;
+                        doAsc = true;
+                    } else {
+                        // Do nothing.
+                        output = "times_asc: " + numTimesAscended + " " + lbracket + TextTransforms.apply("status: Waiting...", [TextTransforms.Color.ChartsGray]) + rbracket + " " + nxtmutlp_div_by_currentmultp + " < " + calculated_asc_threshold;
                     }
 
+                    ns.print(member_name + ", " + output + " " + prepping + " \n");
+
+                    if (doAsc) {
+                        await ns.sleep(5);
+                        Ascend(_mem); // ascend the member
+                        membersAscended.push(_mem); // let this grow.
+                    }
                 }
             } catch {
                 // ignore.                        
@@ -376,23 +362,23 @@ export async function main(ns) {
     }
 
     // Credit: Mysteyes. https://discord.com/channels/415207508303544321/415207923506216971/940379724214075442
-    function CalculateAscendTreshold(ns, member) {
-        let mult = ns.gang.getMemberInformation(member)['hack_asc_mult'];
+    function CalculateAscendTreshold(mult) {
         if (mult < 1.632) return 1.6326;
-        if (mult < 2.336) return 1.4315;
-        if (mult < 2.999) return 1.284;
-        if (mult < 3.363) return 1.2125;
-        if (mult < 4.253) return 1.1698;
-        if (mult < 4.860) return 1.1428;
-        if (mult < 5.455) return 1.1225;
-        if (mult < 5.977) return 1.0957;
-        if (mult < 6.496) return 1.0869;
-        if (mult < 7.008) return 1.0789;
-        if (mult < 7.519) return 1.073;
-        if (mult < 8.025) return 1.0673;
-        if (mult < 8.513) return 1.0631;
-        return 1.0591;
+        else if (mult < 2.336) return 1.4315;
+        else if (mult < 2.999) return 1.284;
+        else if (mult < 3.363) return 1.2125;
+        else if (mult < 4.253) return 1.1698;
+        else if (mult < 4.860) return 1.1428;
+        else if (mult < 5.455) return 1.1225;
+        else if (mult < 5.977) return 1.0957;
+        else if (mult < 6.496) return 1.0869;
+        else if (mult < 7.008) return 1.0789;
+        else if (mult < 7.519) return 1.073;
+        else if (mult < 8.025) return 1.0673;
+        else if (mult < 8.513) return 1.0631;
+        else return 1.0591;
     }
+
 
     function NumberOfTimesAscended(membersAscended, name) {
         var timesAscended = 0;
